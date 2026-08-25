@@ -1,82 +1,35 @@
-import json
-#Funciones para cargar y guardar datos en JSON
-def cargar_listas_desde_json(nombre_archivo):
-    """Carga todas las listas paralelas desde datos.json"""
-    try:
-        with open(nombre_archivo, "r", encoding="utf-8") as archivo:
-            datos = json.load(archivo)
-        return datos
-    except FileNotFoundError:
-        print(f"Archivo {nombre_archivo} no encontrado.")
-        return None
-    except json.JSONDecodeError:
-        print(f"Error al decodificar {nombre_archivo}.")
-        return None
+# Datos iniciales en listas paralelas
+login_usernames = [
+    "admin", "recepcion1", "recepcion2", "profeyoga", "profebox",
+    "profezumba", "coordinador", "ventas1", "ventas2", "consulta"
+]
+login_passwords = [
+    "admin1234", "recep123", "recep456", "yoga2026", "boxeo2026",
+    "zumba2026", "coord123", "ventas123", "ventas456", "consulta123"
+]
 
+affiliate_names = [
+    "Juan Perez", "Maria Juana", "Rodriguez Pol", "Tambussi Fer",
+    "Alejandro Esteban", "Sofia Diaz", "Camila Torres", "Joaquin parros",
+    "Maria Anjoli", "Mateo retil", "Lucas Gomez", "julio"
+]
+affiliate_codes = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112]
+affiliate_ages = [28, 32, 69, 18, 65, 22, 45, 37, 27, 22, 19, 32]
+affiliate_types = [1, 3, 2, 1, 2, 1, 1, 1, 3, 3, 2, 3]
 
-def guardar_listas_en_json(nombre_archivo):
-    """Guarda todas las listas paralelas en datos.json"""
-    datos = {
-        "login_usernames": login_usernames,
-        "login_passwords": login_passwords,
-        "affiliate_names": affiliate_names,
-        "affiliate_codes": affiliate_codes,
-        "affiliate_ages": affiliate_ages,
-        "affiliate_types": affiliate_types,
-        "gym_class_codes": gym_class_codes,
-        "gym_class_names": gym_class_names,
-        "gym_class_levels": gym_class_levels,
-        "gym_class_capacities": gym_class_capacities,
-        "enrollment_codes": enrollment_codes,
-        "enrollment_affiliate_codes": enrollment_affiliate_codes,
-        "enrollment_gym_class_codes": enrollment_gym_class_codes,
-        "enrollment_attendances": enrollment_attendances,
-        "enrollment_status": enrollment_status
-    }
-    try:
-        with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-            json.dump(datos, archivo, ensure_ascii=False, indent=4)
-        print(f"Datos guardados en {nombre_archivo}")
-    except Exception as e:
-        print(f"Error al guardar {nombre_archivo}: {e}")
+gym_class_codes = [201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+gym_class_names = [
+    "Yoga", "Crossfit", "Boxeo", "Pilates", "Musculacion", "Spinning",
+    "Funcional", "Zumba", "Natacion", "Stretching"
+]
+gym_class_levels = [1, 3, 2, 1, 2, 2, 3, 1, 2, 1]
+gym_class_capacities = [15, 10, 15, 15, 10, 12, 14, 20, 16, 18]
 
-
-# Cargar datos desde JSON
-datos_cargados = cargar_listas_desde_json("datos.json")
-
-if datos_cargados:
-    login_usernames = datos_cargados.get("login_usernames", [])
-    login_passwords = datos_cargados.get("login_passwords", [])
-    affiliate_names = datos_cargados.get("affiliate_names", [])
-    affiliate_codes = datos_cargados.get("affiliate_codes", [])
-    affiliate_ages = datos_cargados.get("affiliate_ages", [])
-    affiliate_types = datos_cargados.get("affiliate_types", [])
-    gym_class_codes = datos_cargados.get("gym_class_codes", [])
-    gym_class_names = datos_cargados.get("gym_class_names", [])
-    gym_class_levels = datos_cargados.get("gym_class_levels", [])
-    gym_class_capacities = datos_cargados.get("gym_class_capacities", [])
-    enrollment_codes = datos_cargados.get("enrollment_codes", [])
-    enrollment_affiliate_codes = datos_cargados.get("enrollment_affiliate_codes", [])
-    enrollment_gym_class_codes = datos_cargados.get("enrollment_gym_class_codes", [])
-    enrollment_attendances = datos_cargados.get("enrollment_attendances", [])
-    enrollment_status = datos_cargados.get("enrollment_status", [])
-else:
-    # Valores por defecto si no se puede cargar el JSON
-    login_usernames = []
-    login_passwords = []
-    affiliate_names = []
-    affiliate_codes = []
-    affiliate_ages = []
-    affiliate_types = []
-    gym_class_codes = []
-    gym_class_names = []
-    gym_class_levels = []
-    gym_class_capacities = []
-    enrollment_codes = []
-    enrollment_affiliate_codes = []
-    enrollment_gym_class_codes = []
-    enrollment_attendances = []
-    enrollment_status = []
+enrollment_codes = [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311]
+enrollment_affiliate_codes = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]
+enrollment_gym_class_codes = [205, 204, 201, 201, 201, 203, 203, 203, 205, 204, 201]
+enrollment_attendances = [8, 3, 10, 2, 7, 10, 10, 10, 8, 5, 9]
+enrollment_status = [1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1]
 
 
 #Funciones de matrices
@@ -967,5 +920,4 @@ valid_login = login()
 
 if valid_login:
     main_menu()
-    guardar_listas_en_json("datos.json")
     print("¡Gracias por usar el sistema de gestión del gimnasio! Hasta luego.")
