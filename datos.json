@@ -1,0 +1,69 @@
+{
+  "login_usernames": [
+    "admin",
+    "recepcion1",
+    "recepcion2",
+    "profeyoga",
+    "profebox",
+    "profezumba",
+    "coordinador",
+    "ventas1",
+    "ventas2",
+    "consulta"
+  ],
+  "login_passwords": [
+    "admin1234",
+    "recep123",
+    "recep456",
+    "yoga2026",
+    "boxeo2026",
+    "zumba2026",
+    "coord123",
+    "ventas123",
+    "ventas456",
+    "consulta123"
+  ],
+  "affiliate_names": [
+    "Juan Perez",
+    "Maria Juana",
+    "Rodriguez Pol",
+    "Tambussi Fer",
+    "Alejandro Esteban",
+    "Sofia Diaz",
+    "Camila Torres",
+    "Joaquin parros",
+    "Maria Anjoli",
+    "Mateo retil",
+    "Lucas Gomez",
+    "julio"
+  ],
+  "affiliate_codes": [
+    101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112
+  ],
+  "affiliate_ages": [28, 32, 69, 18, 65, 22, 45, 37, 27, 22, 19, 32],
+  "affiliate_types": [1, 3, 2, 1, 2, 1, 1, 1, 3, 3, 2, 3],
+  "gym_class_codes": [201, 202, 203, 204, 205, 206, 207, 208, 209, 210],
+  "gym_class_names": [
+    "Yoga",
+    "Crossfit",
+    "Boxeo",
+    "Pilates",
+    "Musculacion",
+    "Spinning",
+    "Funcional",
+    "Zumba",
+    "Natacion",
+    "Stretching"
+  ],
+  "gym_class_levels": [1, 3, 2, 1, 2, 2, 3, 1, 2, 1],
+  "gym_class_capacities": [15, 10, 15, 15, 10, 12, 14, 20, 16, 18],
+  "enrollment_codes": [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311],
+  "enrollment_affiliate_codes": [
+    101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111
+  ],
+  "enrollment_gym_class_codes": [
+    205, 204, 201, 201, 201, 203, 203, 203, 205, 204, 201
+  ],
+  "enrollment_attendances": [8, 3, 10, 2, 7, 10, 10, 10, 8, 5, 9],
+  "enrollment_status": [1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1]
+}
