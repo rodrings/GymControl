@@ -618,6 +618,14 @@ def list_inscripciones():
 
 ##Funcionm para listar clases de un socio
 def clases_de_socio(affiliate_code): 
+    """
+    Obtiene la lista de las clases activas en las que se encuentra inscripto un socio.
+    Parámetros:
+        affiliate_code (int): Código de identificación del socio.
+    Retorna:
+        list[str]: Lista con los nombres de las clases activas a las que asiste el socio.
+    """
+
     posiciones = list(filter(
         lambda i: enrollment_affiliate_codes[i] == affiliate_code and enrollment_status[i] == 1,
         range(len(enrollment_codes))
@@ -629,8 +637,15 @@ def clases_de_socio(affiliate_code):
     return nombre_clases
 
 def listar_clases_socio():
+    """
+    Muestra las clases activas de un socio específico.
+    Solicita por consola el código del socio, verifica su existencia en la lista
+    de afiliados e imprime la lista de sus clases activas o un mensaje si no posee ninguna.
+    Parámetros:
+        No recibe parámetros (interactúa con el usuario para obtener el código del socio).
+    """
     print("Clases de un socio")
-    codigo = pedir_entero("Ingrese el codigo del socio: ","Codigo invalido, ingresar un numero",)
+    codigo = pedir_entero("Ingrese el codigo del socio: ","Codigo invalido, ingresar un numero")
     pos = search_affiliate_position(codigo)
     if pos == -1:
         print("Error,socio no encontrado")
