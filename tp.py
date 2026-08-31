@@ -1,3 +1,5 @@
+from functools import reduce
+
 # Datos iniciales en listas paralelas
 login_usernames = [
     "admin", "recepcion1", "recepcion2", "profeyoga", "profebox",
@@ -614,6 +616,46 @@ def list_inscripciones():
         class_name = gym_class_names[class_pos] if class_pos != -1 else "Clase inexistente"
         print(f"{enrollment_codes[i]:<10} {affiliate_name:<20} {class_name:<20} {enrollment_attendances[i]:<12} {'Activa' if enrollment_status[i] == 1 else 'Inactiva'}")
 
+##Funcionm para listar clases de un socio
+def clases_de_socio(affiliate_code): 
+    """
+    Obtiene la lista de las clases activas en las que se encuentra inscripto un socio.
+    Parámetros:
+        affiliate_code (int): Código de identificación del socio.
+    Retorna:
+        list[str]: Lista con los nombres de las clases activas a las que asiste el socio.
+    """
+
+    posiciones = list(filter(
+        lambda i: enrollment_affiliate_codes[i] == affiliate_code and enrollment_status[i] == 1,
+        range(len(enrollment_codes))
+    ))
+    nombre_clases = list(map(
+        lambda i: gym_class_names[search_class_position(enrollment_gym_class_codes[i])],
+        posiciones
+    ))
+    return nombre_clases
+
+def listar_clases_socio():
+    """
+    Muestra las clases activas de un socio específico.
+    Solicita por consola el código del socio, verifica su existencia en la lista
+    de afiliados e imprime la lista de sus clases activas o un mensaje si no posee ninguna.
+    Parámetros:
+        No recibe parámetros (interactúa con el usuario para obtener el código del socio).
+    """
+    print("Clases de un socio")
+    codigo = pedir_entero("Ingrese el codigo del socio: ","Codigo invalido, ingresar un numero")
+    pos = search_affiliate_position(codigo)
+    if pos == -1:
+        print("Error,socio no encontrado")
+        return
+    clases = clases_de_socio(codigo)
+    if not clases:
+        print("El socio no tiene clases activas")
+    else:
+        print(f"El socio {affiliate_names[pos]} tiene las clases: {', '.join(clases)}")
+
 #Funcion opciones de clases, mostrando el menu y validando la opcion ingresada
 def input_clases_option():
     print("--- GESTIÓN DE CLASES ---")
@@ -693,14 +735,16 @@ def input_inscription_option():
     print("Opcion 2: Baja inscripción")
     print("Opcion 3: Modificar inscripción")
     print("Opcion 4: Listar inscripciones")
+    print("Opcion 5: Listar clases de un socio") ## Agrego nueva funcion que llama a la funcion clases_de_socio para listar clases por socio
     print("Opcion 0: Volver al menu principal")
     raw_option = input("Ingrese una opción: ")
-    while not es_entero(raw_option) or int(raw_option) < 0 or int(raw_option) > 4:
+    while not es_entero(raw_option) or int(raw_option) < 0 or int(raw_option) > 5:
         print("La opción ingresada es errónea, por favor ingrese una opción válida.")
         print("Opcion 1: Alta inscripción")
         print("Opcion 2: Baja inscripción")
         print("Opcion 3: Modificar inscripción")
         print("Opcion 4: Listar inscripciones")
+        print("Opcion 5: Listar clases de un socio")
         print("Opcion 0: Volver al menu principal")
         raw_option = input("Ingrese una opción: ")
     option = int(raw_option)
@@ -781,6 +825,8 @@ def inscription_menu():
             modify_inscripcion()
         elif option == 4:
             list_inscripciones()
+        elif option == 5: 
+            listar_clases_socio()
         option = input_inscription_option()
 
 # Implementacion de Busquedas
