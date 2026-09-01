@@ -1,3 +1,4 @@
+import re
 from functools import reduce
 
 # Índices fijos para cada fila de la matriz
@@ -301,7 +302,7 @@ def search_class_position(code):
 def search_user_position(username):
     position = -1
     for i in range(len(login_users)):
-        if login_users[i][LOGIN_USERNAME] == username:
+        if re.fullmatch(login_users[i][LOGIN_USERNAME], username, re.IGNORECASE):
             position = i
     return position
 
