@@ -2,7 +2,7 @@ from functools import reduce
 
 # Índices fijos para cada fila de la matriz
 LOGIN_USERNAME, LOGIN_PASSWORD = 0, 1
-AFF_NAME, AFF_CODE, AFF_AGE, AFF_TYPE = 0, 1, 2, 3
+AFF_NAME, AFF_CODE, AFF_AGE, AFF_TYPE, AFF_PHONE = 0, 1, 2, 3, 4
 CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_CAPACITY = 0, 1, 2, 3
 ENR_CODE, ENR_AFFILIATE_CODE, ENR_CLASS_CODE, ENR_ATTENDANCE, ENR_STATUS = 0, 1, 2, 3, 4
 
@@ -21,18 +21,18 @@ login_users = (
 )
 
 affiliates = [
-    ["Juan Perez", 101, 28, 1],
-    ["Maria Juana", 102, 32, 3],
-    ["Rodriguez Pol", 103, 69, 2],
-    ["Tambussi Fer", 104, 18, 1],
-    ["Alejandro Esteban", 105, 65, 2],
-    ["Sofia Diaz", 106, 22, 1],
-    ["Camila Torres", 107, 45, 1],
-    ["Joaquin parros", 108, 37, 1],
-    ["Maria Anjoli", 109, 27, 3],
-    ["Mateo retil", 110, 22, 3],
-    ["Lucas Gomez", 111, 19, 2],
-    ["julio", 112, 32, 3]
+    ["Juan Perez", 101, 28, 1, "54 9 11 2587-8779"],
+    ["Maria Juana", 102, 32, 3, "54 9 11 3456-1028"],
+    ["Rodriguez Pol", 103, 69, 2, "54 9 11 4678-2193"],
+    ["Tambussi Fer", 104, 18, 1, "54 9 11 5789-3046"],
+    ["Alejandro Esteban", 105, 65, 2, "54 9 11 6890-4175"],
+    ["Sofia Diaz", 106, 22, 1, "54 9 11 7123-5684"],
+    ["Camila Torres", 107, 45, 1, "54 9 11 8234-6795"],
+    ["Joaquin parros", 108, 37, 1, "54 9 11 9345-7806"],
+    ["Maria Anjoli", 109, 27, 3, "54 9 11 1467-8920"],
+    ["Mateo retil", 110, 22, 3, "54 9 11 2578-9031"],
+    ["Lucas Gomez", 111, 19, 2, "54 9 11 3689-0142"],
+    ["julio", 112, 32, 3, "54 9 11 4790-1253"]
 ]
 
 classes = [
