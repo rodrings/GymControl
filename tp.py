@@ -271,6 +271,9 @@ def es_string(valor):
         res = False
     return res
 
+def es_nombre_clase_valido(nombre):
+    return re.match(r"^[A-Za-z]+$", nombre)
+
 def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.", minimo=None, maximo=None):
     valor = input(mensaje)
     while not es_entero(valor) or (minimo is not None and int(valor) < minimo) or (maximo is not None and int(valor) > maximo):
@@ -471,7 +474,10 @@ def list_affiliates():
 #Funcion para sumar clases, validando nivel y capacidad, y asignando un codigo automaticamente
 def sumar_clase():
     print("\nSUMAR CLASE")
-    nombre = input("Nombre de la clase: ")
+    nombre = input("Nombre de la clase: ").strip()
+    while not es_nombre_clase_valido(nombre):
+        print("ERROR, ingrese una o más palabras formadas solamente por letras")
+        nombre = input("Nombre de la clase: ").strip()
 
     nivel = input("Nivel (1-Principiante, 2-Intermedio, 3-Avanzado): ")
     while not es_entero(nivel) or int(nivel) < 1 or int(nivel) > 3:
@@ -524,8 +530,11 @@ def modify_clase():
         print("Clase no encontrada.")
     else:
         print(f"Clase actual: {classes[pos][CLASS_NAME]}, Nivel: {get_level_name(classes[pos][CLASS_LEVEL])}, Cupos disponibles: {classes[pos][CLASS_CAPACITY]}")
-        nombre = input(f"Nuevo nombre (si para mantener '{classes[pos][CLASS_NAME]}'): ")
+        nombre = input(f"Nuevo nombre (si para mantener '{classes[pos][CLASS_NAME]}'): ").strip()
         if nombre != "si":
+            while not es_nombre_clase_valido(nombre):
+                print("ERROR, ingrese una o más palabras formadas solamente por letras")
+                nombre = input("Nuevo nombre: ").strip()
             classes[pos][CLASS_NAME] = nombre
         nivel = input(f"Nuevo nivel -1-Principiante 2-Intermedio 3-Avanzado- (si para mantener {get_level_name(classes[pos][CLASS_LEVEL])}): ")
         if nivel != "si":
