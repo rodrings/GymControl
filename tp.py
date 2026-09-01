@@ -94,11 +94,9 @@ def attendances_by_class_matrix():
 def total_attendances_by_class():
     print("TOTAL DE ASISTENCIAS POR CLASE")
     matrix = attendances_by_class_matrix()
-    for i in range(len(classes)):
-        total = 0
-        for j in range(len(matrix[i])):
-            total += matrix[i][j]
-        print(f"Clase: {classes[i][CLASS_NAME]} - Total de asistencias: {total}")
+    totals = list(map(lambda class_attendances: reduce(lambda accumulated, attendance: accumulated + attendance, class_attendances, 0), matrix))
+    for i in range(len(matrix)):
+        print(f"Clase: {classes[i][CLASS_NAME]} - Total de asistencias: {totals[i]}")
 
 # generar una matriz por inscripcion por nivel de clase
 def enrollment_by_class_level_matrix():
