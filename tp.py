@@ -7,18 +7,18 @@ CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_CAPACITY = 0, 1, 2, 3
 ENR_CODE, ENR_AFFILIATE_CODE, ENR_CLASS_CODE, ENR_ATTENDANCE, ENR_STATUS = 0, 1, 2, 3, 4
 
 # Estructuras matriciales
-login_users = (
-    ("admin", "admin1234"),
-    ("recepcion1", "recep123"),
-    ("recepcion2", "recep456"),
-    ("profeyoga", "yoga2026"),
-    ("profebox", "boxeo2026"),
-    ("profezumba", "zumba2026"),
-    ("coordinador", "coord123"),
-    ("ventas1", "ventas123"),
-    ("ventas2", "ventas456"),
-    ("consulta", "consulta123")
-)
+login_users = [
+    ["admin", "admin1234"],
+    ["recepcion1", "recep123"],
+    ["recepcion2", "recep456"],
+    ["profeyoga", "yoga2026"],
+    ["profebox", "boxeo2026"],
+    ["profezumba", "zumba2026"],
+    ["coordinador", "coord123"],
+    ["ventas1", "ventas123"],
+    ["ventas2", "ventas456"],
+    ["consulta", "consulta123"]
+]
 
 affiliates = [
     ["Juan Perez", 101, 28, 1, "11-2587-8779"],
