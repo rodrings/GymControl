@@ -1,107 +1,137 @@
 from functools import reduce
 
-# Datos iniciales en listas paralelas
-login_usernames = [
-    "admin", "recepcion1", "recepcion2", "profeyoga", "profebox",
-    "profezumba", "coordinador", "ventas1", "ventas2", "consulta"
-]
-login_passwords = [
-    "admin1234", "recep123", "recep456", "yoga2026", "boxeo2026",
-    "zumba2026", "coord123", "ventas123", "ventas456", "consulta123"
+# Índices fijos para cada fila de la matriz
+LOGIN_USERNAME, LOGIN_PASSWORD = 0, 1
+AFF_NAME, AFF_CODE, AFF_AGE, AFF_TYPE = 0, 1, 2, 3
+CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_CAPACITY = 0, 1, 2, 3
+ENR_CODE, ENR_AFFILIATE_CODE, ENR_CLASS_CODE, ENR_ATTENDANCE, ENR_STATUS = 0, 1, 2, 3, 4
+
+# Estructuras matriciales
+login_users = (
+    ("admin", "admin1234"),
+    ("recepcion1", "recep123"),
+    ("recepcion2", "recep456"),
+    ("profeyoga", "yoga2026"),
+    ("profebox", "boxeo2026"),
+    ("profezumba", "zumba2026"),
+    ("coordinador", "coord123"),
+    ("ventas1", "ventas123"),
+    ("ventas2", "ventas456"),
+    ("consulta", "consulta123")
+)
+
+affiliates = [
+    ["Juan Perez", 101, 28, 1],
+    ["Maria Juana", 102, 32, 3],
+    ["Rodriguez Pol", 103, 69, 2],
+    ["Tambussi Fer", 104, 18, 1],
+    ["Alejandro Esteban", 105, 65, 2],
+    ["Sofia Diaz", 106, 22, 1],
+    ["Camila Torres", 107, 45, 1],
+    ["Joaquin parros", 108, 37, 1],
+    ["Maria Anjoli", 109, 27, 3],
+    ["Mateo retil", 110, 22, 3],
+    ["Lucas Gomez", 111, 19, 2],
+    ["julio", 112, 32, 3]
 ]
 
-affiliate_names = [
-    "Juan Perez", "Maria Juana", "Rodriguez Pol", "Tambussi Fer",
-    "Alejandro Esteban", "Sofia Diaz", "Camila Torres", "Joaquin parros",
-    "Maria Anjoli", "Mateo retil", "Lucas Gomez", "julio"
+classes = [
+    [201, "Yoga", 1, 15],
+    [202, "Crossfit", 3, 10],
+    [203, "Boxeo", 2, 15],
+    [204, "Pilates", 1, 15],
+    [205, "Musculacion", 2, 10],
+    [206, "Spinning", 2, 12],
+    [207, "Funcional", 3, 14],
+    [208, "Zumba", 1, 20],
+    [209, "Natacion", 2, 16],
+    [210, "Stretching", 1, 18]
 ]
-affiliate_codes = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112]
-affiliate_ages = [28, 32, 69, 18, 65, 22, 45, 37, 27, 22, 19, 32]
-affiliate_types = [1, 3, 2, 1, 2, 1, 1, 1, 3, 3, 2, 3]
 
-gym_class_codes = [201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
-gym_class_names = [
-    "Yoga", "Crossfit", "Boxeo", "Pilates", "Musculacion", "Spinning",
-    "Funcional", "Zumba", "Natacion", "Stretching"
+enrollments = [
+    [301, 101, 205, 8, 1],
+    [302, 102, 204, 3, 1],
+    [303, 103, 201, 10, 2],
+    [304, 104, 201, 2, 1],
+    [305, 105, 201, 7, 1],
+    [306, 106, 203, 10, 2],
+    [307, 107, 203, 10, 2],
+    [308, 108, 203, 10, 2],
+    [309, 109, 205, 8, 1],
+    [310, 110, 204, 5, 1],
+    [311, 111, 201, 9, 1]
 ]
-gym_class_levels = [1, 3, 2, 1, 2, 2, 3, 1, 2, 1]
-gym_class_capacities = [15, 10, 15, 15, 10, 12, 14, 20, 16, 18]
-
-enrollment_codes = [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311]
-enrollment_affiliate_codes = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]
-enrollment_gym_class_codes = [205, 204, 201, 201, 201, 203, 203, 203, 205, 204, 201]
-enrollment_attendances = [8, 3, 10, 2, 7, 10, 10, 10, 8, 5, 9]
-enrollment_status = [1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 1]
 
 
 #Funciones de matrices
 # Genera una matriz de cantidad de afiliados por clase
 def affiliates_by_class_matrix():
-    matrix = [[] for _ in range(len(gym_class_codes))]
-    for i in range(len(enrollment_codes)):
-        affilateCode = enrollment_affiliate_codes[i]
-        classCode = enrollment_gym_class_codes[i]
-        classPos = search_class_position(classCode)
-        matrix[classPos].append(affilateCode)
+    matrix = [[] for _ in range(len(classes))]
+    for i in range(len(enrollments)):
+        affilate_code = enrollments[i][ENR_AFFILIATE_CODE]
+        class_code = enrollments[i][ENR_CLASS_CODE]
+        class_pos = search_class_position(class_code)
+        if class_pos != -1:
+            matrix[class_pos].append(affilate_code)
     return matrix
     
 def affiliates_by_class():
     print("AFILIADOS POR CLASE")
     matrix = affiliates_by_class_matrix()
-    for i in range(len(gym_class_codes)):
-        print(f"Clase: {gym_class_names[i]} - Afiliados: {len(matrix[i])}")
+    for i in range(len(classes)):
+        print(f"Clase: {classes[i][CLASS_NAME]} - Afiliados: {len(matrix[i])}")
 
 # Genera una matriz con las asistencias agrupadas por clase
 def attendances_by_class_matrix():
-    matrix = [[] for _ in range(len(gym_class_codes))]
-    for i in range(len(enrollment_codes)):
-        classCode = enrollment_gym_class_codes[i]
-        classPos = search_class_position(classCode)
-        if classPos != -1:
-            matrix[classPos].append(enrollment_attendances[i])
+    matrix = [[] for _ in range(len(classes))]
+    for i in range(len(enrollments)):
+        class_code = enrollments[i][ENR_CLASS_CODE]
+        class_pos = search_class_position(class_code)
+        if class_pos != -1:
+            matrix[class_pos].append(enrollments[i][ENR_ATTENDANCE])
     return matrix
 
 def total_attendances_by_class():
     print("TOTAL DE ASISTENCIAS POR CLASE")
     matrix = attendances_by_class_matrix()
-    for i in range(len(gym_class_codes)):
+    for i in range(len(classes)):
         total = 0
         for j in range(len(matrix[i])):
             total += matrix[i][j]
-        print(f"Clase: {gym_class_names[i]} - Total de asistencias: {total}")
+        print(f"Clase: {classes[i][CLASS_NAME]} - Total de asistencias: {total}")
 
 # generar una matriz por inscripcion por nivel de clase
 def enrollment_by_class_level_matrix():
     matrix = [[] for _ in range(3)]
-    for i in range(len(enrollment_codes)):
-        class_code = enrollment_gym_class_codes[i]
+    for i in range(len(enrollments)):
+        class_code = enrollments[i][ENR_CLASS_CODE]
         class_pos = search_class_position(class_code)
         if class_pos == -1:
             continue
-        level = gym_class_levels[class_pos]
+        level = classes[class_pos][CLASS_LEVEL]
         if 1 <= level <= 3:
-            matrix[level - 1].append(enrollment_codes[i])
+            matrix[level - 1].append(enrollments[i][ENR_CODE])
     print("INSCRIPCIONES POR NIVEL DE CLASE")
     for i in range(len(matrix)):
         print(f"Nivel {i + 1}: {len(matrix[i])} inscripciones")
 
 #generar una matriz por cantidad de socios por tipo de socio y clase
 def affiliates_by_type_and_class_matrix():
-    matrix = [[[] for _ in range(len(gym_class_codes))] for _ in range(3)]
-    for i in range(len(enrollment_codes)):
-        affiliate_code = enrollment_affiliate_codes[i]
-        class_code = enrollment_gym_class_codes[i]
+    matrix = [[[] for _ in range(len(classes))] for _ in range(3)]
+    for i in range(len(enrollments)):
+        affiliate_code = enrollments[i][ENR_AFFILIATE_CODE]
+        class_code = enrollments[i][ENR_CLASS_CODE]
         affiliate_pos = search_affiliate_position(affiliate_code)
         class_pos = search_class_position(class_code)
         if affiliate_pos == -1 or class_pos == -1:
             continue
-        affiliate_type = affiliate_types[affiliate_pos]
+        affiliate_type = affiliates[affiliate_pos][AFF_TYPE]
         if 1 <= affiliate_type <= 3:
             matrix[affiliate_type - 1][class_pos].append(affiliate_code)
     print("AFILIADOS POR TIPO Y CLASE")
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
-            print(f"Socio {get_type_name(i + 1)} - Clase {gym_class_names[j]}: {len(matrix[i][j])} afiliados")
+            print(f"Socio {get_type_name(i + 1)} - Clase {classes[j][CLASS_NAME]}: {len(matrix[i][j])} afiliados")
 
 #Funciones de Busqueda
 #Funcion de busqueda Binaria
@@ -109,11 +139,10 @@ def buscar_clase_binaria():
     print("BÚSQUEDA BINARIA DE CLASE POR CÓDIGO")
     codigo = pedir_entero("Ingrese el código de la clase a buscar: ", "Código inválido, ingrese un número.")
 
-    # Primero ordenamos las copias por código (inserción) para poder aplicar búsqueda binaria
-    codigos = gym_class_codes[:]
-    nombres = gym_class_names[:]
-    niveles = gym_class_levels[:]
-    capacidades = gym_class_capacities[:]
+    codigos = [row[CLASS_CODE] for row in classes]
+    nombres = [row[CLASS_NAME] for row in classes]
+    niveles = [row[CLASS_LEVEL] for row in classes]
+    capacidades = [row[CLASS_CAPACITY] for row in classes]
 
     n = len(codigos)
     for i in range(1, n):
@@ -133,7 +162,6 @@ def buscar_clase_binaria():
         niveles[j + 1] = clave_nivel
         capacidades[j + 1] = clave_capacidad
 
-    # búsqueda binaria
     inicio = 0
     fin = n - 1
     posicion = -1
@@ -142,7 +170,7 @@ def buscar_clase_binaria():
         medio = (inicio + fin) // 2
         if codigos[medio] == codigo:
             posicion = medio
-            inicio = fin + 1  # fuerza salida del while
+            inicio = fin + 1
         elif codigos[medio] < codigo:
             inicio = medio + 1
         else:
@@ -160,90 +188,61 @@ def buscar_socio_secuencial():
     codigo = pedir_entero("Ingrese el código del socio a buscar: ", "Código inválido, ingrese un número.")
 
     posicion = -1
-    for i in range(len(affiliate_codes)):
-        if affiliate_codes[i] == codigo:
+    for i in range(len(affiliates)):
+        if affiliates[i][AFF_CODE] == codigo:
             posicion = i
 
     if posicion == -1:
         print("Socio no encontrado.")
     else:
         print(f"Socio encontrado en posición {posicion}:")
-        print(f"Código: {affiliate_codes[posicion]}, Nombre: {affiliate_names[posicion]}, Edad: {affiliate_ages[posicion]}, Tipo: {get_type_name(affiliate_types[posicion])}")
+        print(f"Código: {affiliates[posicion][AFF_CODE]}, Nombre: {affiliates[posicion][AFF_NAME]}, Edad: {affiliates[posicion][AFF_AGE]}, Tipo: {get_type_name(affiliates[posicion][AFF_TYPE])}")
 
 #Funciones de Ordenamiento
 #Funcion para ordenar socios por edad usando el método de selección
 def ordenar_socios_por_edad():
-    # Trabajamos sobre copias para no modificar las listas originales
-    nombres = affiliate_names[:]
-    codigos = affiliate_codes[:]
-    edades = affiliate_ages[:]
-    tipos = affiliate_types[:]
-
-    n = len(edades)
+    afiliados_ordenados = [fila[:] for fila in affiliates]
+    n = len(afiliados_ordenados)
     for i in range(n - 1):
         pos_min = i
         for j in range(i + 1, n):
-            if edades[j] < edades[pos_min]:
+            if afiliados_ordenados[j][AFF_AGE] < afiliados_ordenados[pos_min][AFF_AGE]:
                 pos_min = j
-        # Intercambio en todas las listas paralelas
-        edades[i], edades[pos_min] = edades[pos_min], edades[i]
-        nombres[i], nombres[pos_min] = nombres[pos_min], nombres[i]
-        codigos[i], codigos[pos_min] = codigos[pos_min], codigos[i]
-        tipos[i], tipos[pos_min] = tipos[pos_min], tipos[i]
+        afiliados_ordenados[i], afiliados_ordenados[pos_min] = afiliados_ordenados[pos_min], afiliados_ordenados[i]
 
     print("SOCIOS ORDENADOS POR EDAD (Selección)")
-    for i in range(n):
-        print(f"Código: {codigos[i]}, Nombre: {nombres[i]}, Edad: {edades[i]}, Tipo: {get_type_name(tipos[i])}")
+    for row in afiliados_ordenados:
+        print(f"Código: {row[AFF_CODE]}, Nombre: {row[AFF_NAME]}, Edad: {row[AFF_AGE]}, Tipo: {get_type_name(row[AFF_TYPE])}")
 
 #Funcion para ordenar clases por nivel usando el método de inserción
 def ordenar_clases_por_nivel():
-    codigos = gym_class_codes[:]
-    nombres = gym_class_names[:]
-    niveles = gym_class_levels[:]
-    capacidades = gym_class_capacities[:]
-
-    n = len(niveles)
+    clases_ordenadas = [fila[:] for fila in classes]
+    n = len(clases_ordenadas)
     for i in range(1, n):
-        clave_nivel = niveles[i]
-        clave_codigo = codigos[i]
-        clave_nombre = nombres[i]
-        clave_capacidad = capacidades[i]
+        clave_nivel = clases_ordenadas[i][CLASS_LEVEL]
+        clave_fila = clases_ordenadas[i][:]
         j = i - 1
-        while j >= 0 and niveles[j] > clave_nivel:
-            niveles[j + 1] = niveles[j]
-            codigos[j + 1] = codigos[j]
-            nombres[j + 1] = nombres[j]
-            capacidades[j + 1] = capacidades[j]
+        while j >= 0 and clases_ordenadas[j][CLASS_LEVEL] > clave_nivel:
+            clases_ordenadas[j + 1] = clases_ordenadas[j][:]
             j -= 1
-        niveles[j + 1] = clave_nivel
-        codigos[j + 1] = clave_codigo
-        nombres[j + 1] = clave_nombre
-        capacidades[j + 1] = clave_capacidad
+        clases_ordenadas[j + 1] = clave_fila
 
     print("CLASES ORDENADAS POR NIVEL (Inserción)")
-    for i in range(n):
-        print(f"Código: {codigos[i]}, Nombre: {nombres[i]}, Nivel: {niveles[i]}, Cupos disponibles: {capacidades[i]}")
+    for row in clases_ordenadas:
+        print(f"Código: {row[CLASS_CODE]}, Nombre: {row[CLASS_NAME]}, Nivel: {row[CLASS_LEVEL]}, Cupos disponibles: {row[CLASS_CAPACITY]}")
 
 #Función para ordenar inscripciones por asistencias usando el método de burbujeo
 def ordenar_inscripciones_por_asistencias():
-    codigos = enrollment_codes[:]
-    socios = enrollment_affiliate_codes[:]
-    clases = enrollment_gym_class_codes[:]
-    asistencias = enrollment_attendances[:]
-    estados = enrollment_status[:]
-    n = len(asistencias)
+    inscripciones_ordenadas = [fila[:] for fila in enrollments]
+    n = len(inscripciones_ordenadas)
     for i in range(n - 1):
         for j in range(0, n - 1 - i):
-            if asistencias[j] > asistencias[j + 1]:
-                asistencias[j], asistencias[j + 1] = asistencias[j + 1], asistencias[j]
-                codigos[j], codigos[j + 1] = codigos[j + 1], codigos[j]
-                socios[j], socios[j + 1] = socios[j + 1], socios[j]
-                clases[j], clases[j + 1] = clases[j + 1], clases[j]
-                estados[j], estados[j + 1] = estados[j + 1], estados[j]
+            if inscripciones_ordenadas[j][ENR_ATTENDANCE] > inscripciones_ordenadas[j + 1][ENR_ATTENDANCE]:
+                inscripciones_ordenadas[j], inscripciones_ordenadas[j + 1] = inscripciones_ordenadas[j + 1], inscripciones_ordenadas[j]
 
     print("INSCRIPCIONES ORDENADAS POR ASISTENCIAS (Burbujeo)")
-    for i in range(n):
-        print(f"Código: {codigos[i]}, Socio: {socios[i]}, Clase: {clases[i]}, Asistencias: {asistencias[i]}, Estado: {estados[i]}")
+    for row in inscripciones_ordenadas:
+        print(f"Código: {row[ENR_CODE]}, Socio: {row[ENR_AFFILIATE_CODE]}, Clase: {row[ENR_CLASS_CODE]}, Asistencias: {row[ENR_ATTENDANCE]}, Estado: {row[ENR_STATUS]}")
 
 #Funciones de validacion entero,flotante, string
 #Funcion para Entero
@@ -295,16 +294,16 @@ def get_level_name(level_code):
 
 def search_class_position(code):
     position = -1
-    for i in range(len(gym_class_codes)):
-        if gym_class_codes[i] == code:
+    for i in range(len(classes)):
+        if classes[i][CLASS_CODE] == code:
             position = i
     return position
 
 #Funcion de busqueda de usuario para login
 def search_user_position(username):
     position = -1
-    for i in range(len(login_usernames)):
-        if login_usernames[i] == username:
+    for i in range(len(login_users)):
+        if login_users[i][LOGIN_USERNAME] == username:
             position = i
     return position
 
@@ -317,14 +316,14 @@ def login():
     input_passw = input("ingrese su contraseña: ")
     user_position = search_user_position(input_user)
 
-    while (user_position == -1 or login_passwords[user_position] != input_passw) and attempts < max_attempts:
+    while (user_position == -1 or login_users[user_position][LOGIN_PASSWORD] != input_passw) and attempts < max_attempts:
         print("El nombre de usuario o la contraseña son incorrectos, por favor vuelva a intentarlo.")
         input_user = input("ingrese su nombre de usuario: ")
         input_passw = input("ingrese su contraseña: ")
         user_position = search_user_position(input_user)
         attempts += 1
 
-    if user_position == -1 or login_passwords[user_position] != input_passw:
+    if user_position == -1 or login_users[user_position][LOGIN_PASSWORD] != input_passw:
         print("Has superado el número de intentos permitidos. Acceso bloqueado.")
         return False
     else:
@@ -370,13 +369,10 @@ def sumar_afiliados():
         affiliate_type = input("Vuelva a ingresar su tipo (1-Mensual, 2-Libre, 3-Premium): ")
 
     codigo = 101
-    if len(affiliate_codes) > 0:
-        codigo = affiliate_codes[-1] + 1
+    if len(affiliates) > 0:
+        codigo = affiliates[-1][AFF_CODE] + 1
 
-    affiliate_names.append(nombre)
-    affiliate_codes.append(codigo)
-    affiliate_ages.append(int(edad))
-    affiliate_types.append(int(affiliate_type))
+    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)])
 
     print(f"Socio '{nombre}' agregado con código {codigo}.")
 
@@ -388,14 +384,11 @@ def eliminar_afiliados():
     if pos == -1:
         print("Socio no encontrado.")
     else:
-        print(f"¿Seguro que desea eliminar a '{affiliate_names[pos]}'? (s/n)")
+        print(f"¿Seguro que desea eliminar a '{affiliates[pos][AFF_NAME]}'? (s/n)")
         confirm = input()
         if confirm.lower() == "s":
             inscripciones_eliminadas = remove_enrollments_by_affiliate(codigo)
-            affiliate_names.pop(pos)
-            affiliate_codes.pop(pos)
-            affiliate_ages.pop(pos)
-            affiliate_types.pop(pos)
+            affiliates.pop(pos)
             print("Socio eliminado.")
             if inscripciones_eliminadas > 0:
                 print(f"Se eliminaron {inscripciones_eliminadas} inscripciones asociadas.")
@@ -416,24 +409,20 @@ def get_type_name(type_code):
 #Funcion para buscar la posicion de un afiliado por su codigo, devuelve -1 si no se encuentra
 def search_affiliate_position(code):
     position = -1
-    for i in range(len(affiliate_codes)):
-        if affiliate_codes[i] == code:
+    for i in range(len(affiliates)):
+        if affiliates[i][AFF_CODE] == code:
             position = i
     return position
 
 
 def remove_enrollment_at(position):
-    enrollment_codes.pop(position)
-    enrollment_affiliate_codes.pop(position)
-    enrollment_gym_class_codes.pop(position)
-    enrollment_attendances.pop(position)
-    enrollment_status.pop(position)
+    enrollments.pop(position)
 
 
 def remove_enrollments_by_affiliate(affiliate_code):
     deleted_count = 0
-    for i in range(len(enrollment_codes) - 1, -1, -1):
-        if enrollment_affiliate_codes[i] == affiliate_code:
+    for i in range(len(enrollments) - 1, -1, -1):
+        if enrollments[i][ENR_AFFILIATE_CODE] == affiliate_code:
             remove_enrollment_at(i)
             deleted_count += 1
     return deleted_count
@@ -441,8 +430,8 @@ def remove_enrollments_by_affiliate(affiliate_code):
 
 def remove_enrollments_by_class(class_code):
     deleted_count = 0
-    for i in range(len(enrollment_codes) - 1, -1, -1):
-        if enrollment_gym_class_codes[i] == class_code:
+    for i in range(len(enrollments) - 1, -1, -1):
+        if enrollments[i][ENR_CLASS_CODE] == class_code:
             remove_enrollment_at(i)
             deleted_count += 1
     return deleted_count
@@ -455,30 +444,30 @@ def modify_affiliate():
     if pos == -1:
         print("Socio no encontrado.")
     else:
-        print(f"Socio actual: {affiliate_names[pos]}, {affiliate_ages[pos]} años, {get_type_name(affiliate_types[pos])}")
-        nombre = input(f"Nuevo nombre (si para mantener '{affiliate_names[pos]}'): ")
+        print(f"Socio actual: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}")
+        nombre = input(f"Nuevo nombre (si para mantener '{affiliates[pos][AFF_NAME]}'): ")
         if nombre != "si":
-            affiliate_names[pos] = nombre
-        edad = input(f"Nueva edad (si para mantener {affiliate_ages[pos]}): ")
+            affiliates[pos][AFF_NAME] = nombre
+        edad = input(f"Nueva edad (si para mantener {affiliates[pos][AFF_AGE]}): ")
         if edad != "si":
             while not es_entero(edad) or int(edad) < 0 or int(edad) > 100:
                 print("ERROR, se debe ingresar una edad entre 0 y 100")
                 edad = input("Nueva edad: ")
-            affiliate_ages[pos] = int(edad)
+            affiliates[pos][AFF_AGE] = int(edad)
         print("Tipos: 1-Mensual  2-Libre  3-Premium")
-        type_code = input(f"Nuevo tipo (si para mantener {affiliate_types[pos]}): ")
+        type_code = input(f"Nuevo tipo (si para mantener {affiliates[pos][AFF_TYPE]}): ")
         if type_code != "si":
             while not es_entero(type_code) or int(type_code) < 1 or int(type_code) > 3:
                 print("ERROR, se debe ingresar un codigo entre 1 y 3")
                 type_code = input("Nuevo tipo: ")
-            affiliate_types[pos] = int(type_code)
-        print(f"Socio modificado: {affiliate_names[pos]}, {affiliate_ages[pos]} años, {get_type_name(affiliate_types[pos])}")
+            affiliates[pos][AFF_TYPE] = int(type_code)
+        print(f"Socio modificado: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}")
 
 #Funcion para listar afiliados, mostrando codigo, nombre, edad y tipo de afiliado
 def list_affiliates():
     print("LISTA DE AFILIADOS")
-    for i in range(len(affiliate_names)):
-        print(f"Código: {affiliate_codes[i]}, Nombre: {affiliate_names[i]}, Edad: {affiliate_ages[i]}, Tipo: {get_type_name(affiliate_types[i])}")
+    for i in range(len(affiliates)):
+        print(f"Código: {affiliates[i][AFF_CODE]}, Nombre: {affiliates[i][AFF_NAME]}, Edad: {affiliates[i][AFF_AGE]}, Tipo: {get_type_name(affiliates[i][AFF_TYPE])}")
 
 #Funcion para sumar clases, validando nivel y capacidad, y asignando un codigo automaticamente
 def sumar_clase():
@@ -497,12 +486,8 @@ def sumar_clase():
         capacidad = input("Cupos disponibles: ")
     capacidad = int(capacidad)
 
-    codigo = 201 if len(gym_class_codes) == 0 else gym_class_codes[-1] + 1
-
-    gym_class_codes.append(codigo)
-    gym_class_names.append(nombre)
-    gym_class_levels.append(nivel)
-    gym_class_capacities.append(capacidad)
+    codigo = 201 if len(classes) == 0 else classes[-1][CLASS_CODE] + 1
+    classes.append([codigo, nombre, nivel, capacidad])
 
     print(f"Clase '{nombre}' agregada con código {codigo}.")
 
@@ -517,14 +502,11 @@ def eliminar_clase():
     if pos == -1:
         print("Clase no encontrada.")
     else:
-        confirm = input(f"¿Seguro que desea eliminar la clase '{gym_class_names[pos]}'? (s/n): ")
+        confirm = input(f"¿Seguro que desea eliminar la clase '{classes[pos][CLASS_NAME]}'? (s/n): ")
         if confirm.lower() == "s":
-            class_code = gym_class_codes[pos]
+            class_code = classes[pos][CLASS_CODE]
             inscripciones_eliminadas = remove_enrollments_by_class(class_code)
-            gym_class_codes.pop(pos)
-            gym_class_names.pop(pos)
-            gym_class_levels.pop(pos)
-            gym_class_capacities.pop(pos)
+            classes.pop(pos)
             print("Clase eliminada.")
             if inscripciones_eliminadas > 0:
                 print(f"Se eliminaron {inscripciones_eliminadas} inscripciones asociadas.")
@@ -542,41 +524,41 @@ def modify_clase():
     if pos == -1:
         print("Clase no encontrada.")
     else:
-        print(f"Clase actual: {gym_class_names[pos]}, Nivel: {get_level_name(gym_class_levels[pos])}, Cupos disponibles: {gym_class_capacities[pos]}")
-        nombre = input(f"Nuevo nombre (si para mantener '{gym_class_names[pos]}'): ")
+        print(f"Clase actual: {classes[pos][CLASS_NAME]}, Nivel: {get_level_name(classes[pos][CLASS_LEVEL])}, Cupos disponibles: {classes[pos][CLASS_CAPACITY]}")
+        nombre = input(f"Nuevo nombre (si para mantener '{classes[pos][CLASS_NAME]}'): ")
         if nombre != "si":
-            gym_class_names[pos] = nombre
-        nivel = input(f"Nuevo nivel -1-Principiante 2-Intermedio 3-Avanzado- (si para mantener {get_level_name(gym_class_levels[pos])}): ")
+            classes[pos][CLASS_NAME] = nombre
+        nivel = input(f"Nuevo nivel -1-Principiante 2-Intermedio 3-Avanzado- (si para mantener {get_level_name(classes[pos][CLASS_LEVEL])}): ")
         if nivel != "si":
             while not es_entero(nivel) or int(nivel) < 1 or int(nivel) > 3:
                 print("ERROR, nivel entre 1 y 3")
                 nivel = input("Nuevo nivel: ")
-            gym_class_levels[pos] = int(nivel)
-        capacidad = input(f"Nuevos cupos disponibles (si para mantener {gym_class_capacities[pos]}): ")
+            classes[pos][CLASS_LEVEL] = int(nivel)
+        capacidad = input(f"Nuevos cupos disponibles (si para mantener {classes[pos][CLASS_CAPACITY]}): ")
         if capacidad != "si":
             while not es_entero(capacidad) or int(capacidad) < 1:
                 print("ERROR, ingresar un número mayor a 0")
                 capacidad = input("Nuevos cupos disponibles: ")
-            gym_class_capacities[pos] = int(capacidad)
-        print(f"Clase modificada: {gym_class_names[pos]}, Nivel: {get_level_name(gym_class_levels[pos])}, Cupos disponibles: {gym_class_capacities[pos]}")
+            classes[pos][CLASS_CAPACITY] = int(capacidad)
+        print(f"Clase modificada: {classes[pos][CLASS_NAME]}, Nivel: {get_level_name(classes[pos][CLASS_LEVEL])}, Cupos disponibles: {classes[pos][CLASS_CAPACITY]}")
 
 #Funcion listar clases, mostrando codigo, nombre, nivel y capacidad
 def list_clases():
     print("LISTA DE CLASES")
     print(f"{'Código':<10} {'Nombre':<20} {'Nivel':<18} {'Cupos disponibles'}")
     print("-" * 58)
-    for i in range(len(gym_class_codes)):
-        print(f"{gym_class_codes[i]:<10} {gym_class_names[i]:<20} {get_level_name(gym_class_levels[i]):<18} {gym_class_capacities[i]}")
+    for i in range(len(classes)):
+        print(f"{classes[i][CLASS_CODE]:<10} {classes[i][CLASS_NAME]:<20} {get_level_name(classes[i][CLASS_LEVEL]):<18} {classes[i][CLASS_CAPACITY]}")
 
 def does_class_code_exist(code):
-    for gym_code in gym_class_codes:
-        if gym_code == code:
+    for row in classes:
+        if row[CLASS_CODE] == code:
             return True
     return False
 
 def does_affiliate_code_exist(code):
-    for affiliate_code in affiliate_codes:
-        if affiliate_code == code:
+    for row in affiliates:
+        if row[AFF_CODE] == code:
             return True
     return False
 
@@ -588,7 +570,7 @@ def alta_inscripcion():
         print("por favor ingrese un código válido.")
         class_code = pedir_entero("Ingrese el código de la clase a la que desea inscribirse: ", "por favor ingrese un código válido.")
     class_pos = search_class_position(class_code)
-    if gym_class_capacities[class_pos] <= 0:
+    if classes[class_pos][CLASS_CAPACITY] <= 0:
         print("No hay cupos disponibles para esa clase.")
         return
     list_affiliates()
@@ -597,24 +579,21 @@ def alta_inscripcion():
         print("por favor ingrese un código de afiliado válido.")
         affiliate_code = pedir_entero("Ingrese su código de afiliado: ", "por favor ingrese un código de afiliado válido.")
 
-    enrollment_codes.append(301 if len(enrollment_codes) == 0 else enrollment_codes[-1] + 1)
-    enrollment_gym_class_codes.append(int(class_code))
-    enrollment_affiliate_codes.append(int(affiliate_code))
-    enrollment_status.append(1)
-    enrollment_attendances.append(0)
-    gym_class_capacities[class_pos] -= 1
+    codigo = 301 if len(enrollments) == 0 else enrollments[-1][ENR_CODE] + 1
+    enrollments.append([codigo, int(affiliate_code), int(class_code), 0, 1])
+    classes[class_pos][CLASS_CAPACITY] -= 1
 
 #Funcion para listar inscripciones
 def list_inscripciones():
     print("LISTA DE INSCRIPCIONES")
     print(f"{'Código':<10} {'Socio':<20} {'Clase':<20} {'Asistencias':<12} {'Estado'}")
     print("-" * 80)
-    for i in range(len(enrollment_codes)):
-        affiliate_pos = search_affiliate_position(enrollment_affiliate_codes[i])
-        class_pos = search_class_position(enrollment_gym_class_codes[i])
-        affiliate_name = affiliate_names[affiliate_pos] if affiliate_pos != -1 else "Socio inexistente"
-        class_name = gym_class_names[class_pos] if class_pos != -1 else "Clase inexistente"
-        print(f"{enrollment_codes[i]:<10} {affiliate_name:<20} {class_name:<20} {enrollment_attendances[i]:<12} {'Activa' if enrollment_status[i] == 1 else 'Inactiva'}")
+    for i in range(len(enrollments)):
+        affiliate_pos = search_affiliate_position(enrollments[i][ENR_AFFILIATE_CODE])
+        class_pos = search_class_position(enrollments[i][ENR_CLASS_CODE])
+        affiliate_name = affiliates[affiliate_pos][AFF_NAME] if affiliate_pos != -1 else "Socio inexistente"
+        class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
+        print(f"{enrollments[i][ENR_CODE]:<10} {affiliate_name:<20} {class_name:<20} {enrollments[i][ENR_ATTENDANCE]:<12} {'Activa' if enrollments[i][ENR_STATUS] == 1 else 'Inactiva'}")
 
 ##Funcionm para listar clases de un socio
 def clases_de_socio(affiliate_code): 
@@ -627,11 +606,11 @@ def clases_de_socio(affiliate_code):
     """
 
     posiciones = list(filter(
-        lambda i: enrollment_affiliate_codes[i] == affiliate_code and enrollment_status[i] == 1,
-        range(len(enrollment_codes))
+        lambda i: enrollments[i][ENR_AFFILIATE_CODE] == affiliate_code and enrollments[i][ENR_STATUS] == 1,
+        range(len(enrollments))
     ))
     nombre_clases = list(map(
-        lambda i: gym_class_names[search_class_position(enrollment_gym_class_codes[i])],
+        lambda i: classes[search_class_position(enrollments[i][ENR_CLASS_CODE])][CLASS_NAME],
         posiciones
     ))
     return nombre_clases
@@ -654,7 +633,7 @@ def listar_clases_socio():
     if not clases:
         print("El socio no tiene clases activas")
     else:
-        print(f"El socio {affiliate_names[pos]} tiene las clases: {', '.join(clases)}")
+        print(f"El socio {affiliates[pos][AFF_NAME]} tiene las clases: {', '.join(clases)}")
 
 #Funcion opciones de clases, mostrando el menu y validando la opcion ingresada
 def input_clases_option():
@@ -757,13 +736,18 @@ def baja_inscripcion():
     pos = search_inscription_position(codigo)
     if pos == -1:
         print("Inscripción no encontrada.")
-    elif enrollment_status[pos] == 2:
+    elif enrollments[pos][ENR_STATUS] == 2:
         print("La inscripción ya estaba finalizada.")
     else:
-        confirm = input(f"¿Seguro que desea dar de baja la inscripción del socio '{affiliate_names[search_affiliate_position(enrollment_affiliate_codes[pos])]}' en la clase '{gym_class_names[search_class_position(enrollment_gym_class_codes[pos])]}' ? (s/n): ")
+        affiliate_pos = search_affiliate_position(enrollments[pos][ENR_AFFILIATE_CODE])
+        class_pos = search_class_position(enrollments[pos][ENR_CLASS_CODE])
+        affiliate_name = affiliates[affiliate_pos][AFF_NAME] if affiliate_pos != -1 else "Socio inexistente"
+        class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
+        confirm = input(f"¿Seguro que desea dar de baja la inscripción del socio '{affiliate_name}' en la clase '{class_name}' ? (s/n): ")
         if confirm.lower() == "s":
-            enrollment_status[pos] = 2
-            gym_class_capacities[search_class_position(enrollment_gym_class_codes[pos])] += 1
+            enrollments[pos][ENR_STATUS] = 2
+            if class_pos != -1:
+                classes[class_pos][CLASS_CAPACITY] += 1
             print("Inscripción dada de baja.")
         else:
             print("Operación cancelada.")
@@ -771,8 +755,8 @@ def baja_inscripcion():
 #Funcion para buscar la posicion de una inscripcion por su codigo, devuelve -1 si no se encuentra
 def search_inscription_position(code):
     position = -1
-    for i in range(len(enrollment_codes)):
-        if enrollment_codes[i] == code:
+    for i in range(len(enrollments)):
+        if enrollments[i][ENR_CODE] == code:
             position = i
     return position
 #Funcion para modificar una inscripcion
@@ -783,36 +767,43 @@ def modify_inscripcion():
     if pos == -1:
         print("Inscripción no encontrada.")
     else:
-        estado_anterior = enrollment_status[pos]
-        class_pos = search_class_position(enrollment_gym_class_codes[pos])
-        print(f"Inscripción actual: Socio '{affiliate_names[search_affiliate_position(enrollment_affiliate_codes[pos])]}', Clase '{gym_class_names[search_class_position(enrollment_gym_class_codes[pos])]}', Asistencias: {enrollment_attendances[pos]}, Estado: {'Activa' if enrollment_status[pos] == 1 else 'Inactiva'}")
-        asistencias = input(f"Nuevas asistencias (si para mantener {enrollment_attendances[pos]}): ")
+        estado_anterior = enrollments[pos][ENR_STATUS]
+        class_pos = search_class_position(enrollments[pos][ENR_CLASS_CODE])
+        affiliate_pos = search_affiliate_position(enrollments[pos][ENR_AFFILIATE_CODE])
+        affiliate_name = affiliates[affiliate_pos][AFF_NAME] if affiliate_pos != -1 else "Socio inexistente"
+        class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
+        print(f"Inscripción actual: Socio '{affiliate_name}', Clase '{class_name}', Asistencias: {enrollments[pos][ENR_ATTENDANCE]}, Estado: {'Activa' if enrollments[pos][ENR_STATUS] == 1 else 'Inactiva'}")
+        asistencias = input(f"Nuevas asistencias (si para mantener {enrollments[pos][ENR_ATTENDANCE]}): ")
         if asistencias != "si":
             while not es_entero(asistencias) or int(asistencias) < 0:
                 print("ERROR, las asistencias deben ser un número mayor o igual a 0")
                 asistencias = input("Nuevas asistencias: ")
-            enrollment_attendances[pos] = int(asistencias)
-        estado = input(f"Nuevo estado -1-Activa 2-Inactiva- (si para mantener {'Activa' if enrollment_status[pos] == 1 else 'Inactiva'}): ")
+            enrollments[pos][ENR_ATTENDANCE] = int(asistencias)
+        estado = input(f"Nuevo estado -1-Activa 2-Inactiva- (si para mantener {'Activa' if enrollments[pos][ENR_STATUS] == 1 else 'Inactiva'}): ")
         if estado != "si":
             while not es_entero(estado) or int(estado) < 1 or int(estado) > 2:
                 print("ERROR, estado entre 1 y 2")
                 estado = input("Nuevo estado: ")
             nuevo_estado = int(estado)
             if estado_anterior == 1 and nuevo_estado == 2:
-                enrollment_status[pos] = nuevo_estado
+                enrollments[pos][ENR_STATUS] = nuevo_estado
                 if class_pos != -1:
-                    gym_class_capacities[class_pos] += 1
+                    classes[class_pos][CLASS_CAPACITY] += 1
             elif estado_anterior == 2 and nuevo_estado == 1:
                 if class_pos == -1:
                     print("No se puede activar porque la clase no existe.")
-                elif gym_class_capacities[class_pos] <= 0:
+                elif classes[class_pos][CLASS_CAPACITY] <= 0:
                     print("No hay cupos disponibles para activar esta inscripción.")
                 else:
-                    enrollment_status[pos] = nuevo_estado
-                    gym_class_capacities[class_pos] -= 1
+                    enrollments[pos][ENR_STATUS] = nuevo_estado
+                    classes[class_pos][CLASS_CAPACITY] -= 1
             else:
-                enrollment_status[pos] = nuevo_estado
-        print(f"Inscripción modificada: Socio '{affiliate_names[search_affiliate_position(enrollment_affiliate_codes[pos])]}', Clase '{gym_class_names[search_class_position(enrollment_gym_class_codes[pos])]}', Asistencias: {enrollment_attendances[pos]}, Estado: {'Activa' if enrollment_status[pos] == 1 else 'Inactiva'}")
+                enrollments[pos][ENR_STATUS] = nuevo_estado
+        affiliate_pos = search_affiliate_position(enrollments[pos][ENR_AFFILIATE_CODE])
+        class_pos = search_class_position(enrollments[pos][ENR_CLASS_CODE])
+        affiliate_name = affiliates[affiliate_pos][AFF_NAME] if affiliate_pos != -1 else "Socio inexistente"
+        class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
+        print(f"Inscripción modificada: Socio '{affiliate_name}', Clase '{class_name}', Asistencias: {enrollments[pos][ENR_ATTENDANCE]}, Estado: {'Activa' if enrollments[pos][ENR_STATUS] == 1 else 'Inactiva'}")
 #Funcion de menu de inscripciones
 def inscription_menu():
     option = input_inscription_option()
