@@ -335,7 +335,7 @@ def es_nombre_clase_valido(nombre):
     Parámetros: nombre, cadena que se desea validar.
     Salida: coincidencia encontrada si el nombre es válido; None en caso contrario.
     """
-    return re.match(r"^[A-Za-z]+$", nombre)
+    return re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$", nombre) ## Agrego tildes y espacios 
 
 def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.", minimo=None, maximo=None):
     """
@@ -416,7 +416,7 @@ def login():
         print("¡Bienvenido al sistema de gestión del gimnasio!")
         return True
 
-# Gestión de socios
+# Gestión de socios ==> Este codigo habria que eliminarlo ya que no lo llaman en ninguna parte LC 2/9
 def input_option():
     """
     Objetivo: solicitar y validar una opción del menú de gestión de socios.
@@ -467,7 +467,7 @@ def sumar_afiliados():
     if len(affiliates) > 0:
         codigo = affiliates[-1][AFF_CODE] + 1
 
-    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)])
+    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)]) ## Agregar campo telefono
 
     print(f"Socio '{nombre}' agregado con código {codigo}.")
 
@@ -725,6 +725,19 @@ def does_affiliate_code_exist(code):
             return True
     return False
 
+## Agrego esta funcion para validar si un afiliado ya está dado de alta en una clase LC 2/9
+def is_affiliate_enrolled_in_class(affiliate_code, class_code):
+    """
+    Objetivo: determinar si un socio ya posee una inscripción activa en una clase utilizando lambda y filter.
+    Parámetros: affiliate_code (int), class_code (int).
+    Salida: True si el afiliado ya está inscripto activamente; False en caso contrario.
+    """
+    inscripciones_previas = list(filter(
+        lambda enr: enr[ENR_AFFILIATE_CODE] == affiliate_code and enr[ENR_CLASS_CODE] == class_code and enr[ENR_STATUS] == 1,
+        enrollments
+    ))
+    return len(inscripciones_previas) > 0
+
 # Gestión de inscripciones
 def alta_inscripcion():
     """
@@ -746,10 +759,14 @@ def alta_inscripcion():
     while not does_affiliate_code_exist(affiliate_code):
         print("por favor ingrese un código de afiliado válido.")
         affiliate_code = pedir_entero("Ingrese su código de afiliado: ", "por favor ingrese un código de afiliado válido.")
-
+    if is_affiliate_enrolled_in_class(affiliate_code, class_code):
+        print("ERROR: El afiliado ya se encuentra inscripto en esta clase.")
+        return
+    
     codigo = 301 if len(enrollments) == 0 else enrollments[-1][ENR_CODE] + 1
     enrollments.append([codigo, int(affiliate_code), int(class_code), 0, 1])
     classes[class_pos][CLASS_CAPACITY] -= 1
+    print("Inscripción realizada con éxito.")
 
 def list_inscripciones():
     """
