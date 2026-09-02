@@ -335,7 +335,7 @@ def es_nombre_clase_valido(nombre):
     Parámetros: nombre, cadena que se desea validar.
     Salida: coincidencia encontrada si el nombre es válido; None en caso contrario.
     """
-    return re.match(r"^[A-Za-z]+$", nombre)
+    return re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$", nombre) ## Agrego tildes y espacios 
 
 def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.", minimo=None, maximo=None):
     """
