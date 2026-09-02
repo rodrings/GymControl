@@ -416,7 +416,7 @@ def login():
         print("¡Bienvenido al sistema de gestión del gimnasio!")
         return True
 
-# Gestión de socios
+# Gestión de socios ==> Este codigo habria que eliminarlo ya que no lo llaman en ninguna parte LC 2/9
 def input_option():
     """
     Objetivo: solicitar y validar una opción del menú de gestión de socios.
@@ -467,7 +467,7 @@ def sumar_afiliados():
     if len(affiliates) > 0:
         codigo = affiliates[-1][AFF_CODE] + 1
 
-    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)])
+    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)]) ## Agregar campo telefono
 
     print(f"Socio '{nombre}' agregado con código {codigo}.")
 
