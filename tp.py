@@ -725,6 +725,19 @@ def does_affiliate_code_exist(code):
             return True
     return False
 
+## Agrego esta funcion para validar si un afiliado ya está dado de alta en una clase LC 2/9
+def is_affiliate_enrolled_in_class(affiliate_code, class_code):
+    """
+    Objetivo: determinar si un socio ya posee una inscripción activa en una clase utilizando lambda y filter.
+    Parámetros: affiliate_code (int), class_code (int).
+    Salida: True si el afiliado ya está inscripto activamente; False en caso contrario.
+    """
+    inscripciones_previas = list(filter(
+        lambda enr: enr[ENR_AFFILIATE_CODE] == affiliate_code and enr[ENR_CLASS_CODE] == class_code and enr[ENR_STATUS] == 1,
+        enrollments
+    ))
+    return len(inscripciones_previas) > 0
+
 # Gestión de inscripciones
 def alta_inscripcion():
     """
@@ -746,10 +759,14 @@ def alta_inscripcion():
     while not does_affiliate_code_exist(affiliate_code):
         print("por favor ingrese un código de afiliado válido.")
         affiliate_code = pedir_entero("Ingrese su código de afiliado: ", "por favor ingrese un código de afiliado válido.")
-
+    if is_affiliate_enrolled_in_class(affiliate_code, class_code):
+        print("ERROR: El afiliado ya se encuentra inscripto en esta clase.")
+        return
+    
     codigo = 301 if len(enrollments) == 0 else enrollments[-1][ENR_CODE] + 1
     enrollments.append([codigo, int(affiliate_code), int(class_code), 0, 1])
     classes[class_pos][CLASS_CAPACITY] -= 1
+    print("Inscripción realizada con éxito.")
 
 def list_inscripciones():
     """
