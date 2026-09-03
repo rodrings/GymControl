@@ -1,3 +1,4 @@
+import re
 from functools import reduce
 import re
 
@@ -8,18 +9,18 @@ CLASS_CODE, CLASS_NAME, CLASS_LEVEL, CLASS_CAPACITY = 0, 1, 2, 3
 ENR_CODE, ENR_AFFILIATE_CODE, ENR_CLASS_CODE, ENR_ATTENDANCE, ENR_STATUS = 0, 1, 2, 3, 4
 
 # Estructuras matriciales
-login_users = (
-    ("admin", "admin1234"),
-    ("recepcion1", "recep123"),
-    ("recepcion2", "recep456"),
-    ("profeyoga", "yoga2026"),
-    ("profebox", "boxeo2026"),
-    ("profezumba", "zumba2026"),
-    ("coordinador", "coord123"),
-    ("ventas1", "ventas123"),
-    ("ventas2", "ventas456"),
-    ("consulta", "consulta123")
-)
+login_users = [
+    ["admin", "admin1234"],
+    ["recepcion1", "recep123"],
+    ["recepcion2", "recep456"],
+    ["profeyoga", "yoga2026"],
+    ["profebox", "boxeo2026"],
+    ["profezumba", "zumba2026"],
+    ["coordinador", "coord123"],
+    ["ventas1", "ventas123"],
+    ["ventas2", "ventas456"],
+    ["consulta", "consulta123"]
+]
 
 affiliates = [
     ["Juan Perez", 101, 28, 1, "11-2587-8779"],
@@ -64,9 +65,13 @@ enrollments = [
 ]
 
 
-#Funciones de matrices
-# Genera una matriz de cantidad de afiliados por clase
+# Cálculos estadísticos matriciales
 def affiliates_by_class_matrix():
+    """
+    Objetivo: agrupar los códigos de los socios inscriptos en cada clase.
+    Parámetros: ninguno.
+    Salida: matriz donde cada fila contiene los códigos de socios de una clase.
+    """
     matrix = [[] for _ in range(len(classes))]
     for i in range(len(enrollments)):
         affilate_code = enrollments[i][ENR_AFFILIATE_CODE]
@@ -77,13 +82,22 @@ def affiliates_by_class_matrix():
     return matrix
     
 def affiliates_by_class():
+    """
+    Objetivo: mostrar la cantidad de socios inscriptos en cada clase.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra las cantidades por pantalla.
+    """
     print("AFILIADOS POR CLASE")
     matrix = affiliates_by_class_matrix()
     for i in range(len(classes)):
         print(f"Clase: {classes[i][CLASS_NAME]} - Afiliados: {len(matrix[i])}")
 
-# Genera una matriz con las asistencias agrupadas por clase
 def attendances_by_class_matrix():
+    """
+    Objetivo: agrupar las cantidades de asistencias registradas en cada clase.
+    Parámetros: ninguno.
+    Salida: matriz donde cada fila contiene las asistencias de una clase.
+    """
     matrix = [[] for _ in range(len(classes))]
     for i in range(len(enrollments)):
         class_code = enrollments[i][ENR_CLASS_CODE]
@@ -93,16 +107,23 @@ def attendances_by_class_matrix():
     return matrix
 
 def total_attendances_by_class():
+    """
+    Objetivo: calcular y mostrar el total de asistencias de cada clase.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra los totales por pantalla.
+    """
     print("TOTAL DE ASISTENCIAS POR CLASE")
     matrix = attendances_by_class_matrix()
-    for i in range(len(classes)):
-        total = 0
-        for j in range(len(matrix[i])):
-            total += matrix[i][j]
-        print(f"Clase: {classes[i][CLASS_NAME]} - Total de asistencias: {total}")
+    totals = list(map(lambda class_attendances: reduce(lambda accumulated, attendance: accumulated + attendance, class_attendances, 0), matrix))
+    for i in range(len(matrix)):
+        print(f"Clase: {classes[i][CLASS_NAME]} - Total de asistencias: {totals[i]}")
 
-# generar una matriz por inscripcion por nivel de clase
 def enrollment_by_class_level_matrix():
+    """
+    Objetivo: agrupar las inscripciones según el nivel de la clase correspondiente.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra la cantidad de inscripciones por nivel.
+    """
     matrix = [[] for _ in range(3)]
     for i in range(len(enrollments)):
         class_code = enrollments[i][ENR_CLASS_CODE]
@@ -116,8 +137,12 @@ def enrollment_by_class_level_matrix():
     for i in range(len(matrix)):
         print(f"Nivel {i + 1}: {len(matrix[i])} inscripciones")
 
-#generar una matriz por cantidad de socios por tipo de socio y clase
 def affiliates_by_type_and_class_matrix():
+    """
+    Objetivo: agrupar y mostrar los socios según su tipo y la clase en la que están inscriptos.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra las cantidades por tipo y clase.
+    """
     matrix = [[[] for _ in range(len(classes))] for _ in range(3)]
     for i in range(len(enrollments)):
         affiliate_code = enrollments[i][ENR_AFFILIATE_CODE]
@@ -134,9 +159,13 @@ def affiliates_by_type_and_class_matrix():
         for j in range(len(matrix[i])):
             print(f"Socio {get_type_name(i + 1)} - Clase {classes[j][CLASS_NAME]}: {len(matrix[i][j])} afiliados")
 
-#Funciones de Busqueda
-#Funcion de busqueda Binaria
+# Búsquedas
 def buscar_clase_binaria():
+    """
+    Objetivo: buscar una clase por su código y mostrar sus datos.
+    Parámetros: ninguno; solicita el código por teclado.
+    Salida: no devuelve valores; muestra la clase encontrada o un mensaje de error.
+    """
     print("BÚSQUEDA BINARIA DE CLASE POR CÓDIGO")
     codigo = pedir_entero("Ingrese el código de la clase a buscar: ", "Código inválido, ingrese un número.")
 
@@ -183,8 +212,12 @@ def buscar_clase_binaria():
         print(f"Clase encontrada:")
         print(f"Código: {codigos[posicion]}, Nombre: {nombres[posicion]}, Nivel: {niveles[posicion]}, Cupos disponibles: {capacidades[posicion]}")
 
-#Funcion de busqueda 2
 def buscar_socio_secuencial():
+    """
+    Objetivo: buscar un socio por su código y mostrar sus datos.
+    Parámetros: ninguno; solicita el código por teclado.
+    Salida: no devuelve valores; muestra el socio encontrado o un mensaje de error.
+    """
     print("BÚSQUEDA SECUENCIAL DE SOCIO POR CÓDIGO")
     codigo = pedir_entero("Ingrese el código del socio a buscar: ", "Código inválido, ingrese un número.")
 
@@ -199,9 +232,13 @@ def buscar_socio_secuencial():
         print(f"Socio encontrado en posición {posicion}:")
         print(f"Código: {affiliates[posicion][AFF_CODE]}, Nombre: {affiliates[posicion][AFF_NAME]}, Edad: {affiliates[posicion][AFF_AGE]}, Tipo: {get_type_name(affiliates[posicion][AFF_TYPE])}")
 
-#Funciones de Ordenamiento
-#Funcion para ordenar socios por edad usando el método de selección
+# Ordenamientos
 def ordenar_socios_por_edad():
+    """
+    Objetivo: mostrar los socios ordenados de menor a mayor edad.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra una copia ordenada de los socios.
+    """
     afiliados_ordenados = [fila[:] for fila in affiliates]
     n = len(afiliados_ordenados)
     for i in range(n - 1):
@@ -215,8 +252,12 @@ def ordenar_socios_por_edad():
     for row in afiliados_ordenados:
         print(f"Código: {row[AFF_CODE]}, Nombre: {row[AFF_NAME]}, Edad: {row[AFF_AGE]}, Tipo: {get_type_name(row[AFF_TYPE])}")
 
-#Funcion para ordenar clases por nivel usando el método de inserción
 def ordenar_clases_por_nivel():
+    """
+    Objetivo: mostrar las clases ordenadas de menor a mayor nivel.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra una copia ordenada de las clases.
+    """
     clases_ordenadas = [fila[:] for fila in classes]
     n = len(clases_ordenadas)
     for i in range(1, n):
@@ -232,8 +273,12 @@ def ordenar_clases_por_nivel():
     for row in clases_ordenadas:
         print(f"Código: {row[CLASS_CODE]}, Nombre: {row[CLASS_NAME]}, Nivel: {row[CLASS_LEVEL]}, Cupos disponibles: {row[CLASS_CAPACITY]}")
 
-#Función para ordenar inscripciones por asistencias usando el método de burbujeo
 def ordenar_inscripciones_por_asistencias():
+    """
+    Objetivo: mostrar las inscripciones ordenadas de menor a mayor cantidad de asistencias.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra una copia ordenada de las inscripciones.
+    """
     inscripciones_ordenadas = [fila[:] for fila in enrollments]
     n = len(inscripciones_ordenadas)
     for i in range(n - 1):
@@ -245,9 +290,13 @@ def ordenar_inscripciones_por_asistencias():
     for row in inscripciones_ordenadas:
         print(f"Código: {row[ENR_CODE]}, Socio: {row[ENR_AFFILIATE_CODE]}, Clase: {row[ENR_CLASS_CODE]}, Asistencias: {row[ENR_ATTENDANCE]}, Estado: {row[ENR_STATUS]}")
 
-#Funciones de validacion entero,flotante, string
-#Funcion para Entero
+# Validaciones y entrada de datos
 def es_entero(valor):
+    """
+    Objetivo: determinar si un valor puede convertirse en un número entero.
+    Parámetros: valor, dato que se desea validar.
+    Salida: True si el valor es convertible a entero; False en caso contrario.
+    """
     try:
         valor = int(valor)
         res = True
@@ -255,8 +304,12 @@ def es_entero(valor):
         res = False
     return res
 
-#Funcion para Flotante
 def es_flotante(valor):
+    """
+    Objetivo: determinar si un valor puede convertirse en un número decimal.
+    Parámetros: valor, dato que se desea validar.
+    Salida: True si el valor es convertible a decimal; False en caso contrario.
+    """
     try:
         valor = float(valor)
         res = True
@@ -264,8 +317,12 @@ def es_flotante(valor):
         res = False
     return res
 
-#Funcion para String
 def es_string(valor):
+    """
+    Objetivo: determinar si un valor puede convertirse en una cadena de caracteres.
+    Parámetros: valor, dato que se desea validar.
+    Salida: True si el valor es convertible a cadena; False en caso contrario.
+    """
     try:
         valor = str(valor)
         res = True
@@ -273,7 +330,20 @@ def es_string(valor):
         res = False
     return res
 
+def es_nombre_clase_valido(nombre):
+    """
+    Objetivo: validar que un nombre de clase contenga únicamente letras sin espacios.
+    Parámetros: nombre, cadena que se desea validar.
+    Salida: coincidencia encontrada si el nombre es válido; None en caso contrario.
+    """
+    return re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$", nombre) ## Agrego tildes y espacios 
+
 def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.", minimo=None, maximo=None):
+    """
+    Objetivo: solicitar un número entero hasta que cumpla las condiciones indicadas.
+    Parámetros: mensaje, texto de solicitud; mensaje_error, aviso de error; minimo y maximo, límites opcionales.
+    Salida: número entero validado.
+    """
     valor = input(mensaje)
     while not es_entero(valor) or (minimo is not None and int(valor) < minimo) or (maximo is not None and int(valor) > maximo):
         print(mensaje_error)
@@ -286,7 +356,13 @@ def es_telefono_valido(telefono):
     return re.fullmatch(r"\d{2}-\d{4}-\d{4}", telefono) is not None
 
 #Funcion para obtener el nombre del nivel de clase a partir del codigo
+# Funciones auxiliares de búsqueda y conversión
 def get_level_name(level_code):
+    """
+    Objetivo: obtener el nombre correspondiente a un código de nivel de clase.
+    Parámetros: level_code, código numérico del nivel.
+    Salida: nombre del nivel o "Desconocido" si el código no es válido.
+    """
     if level_code == 1:
         return "Principiante"
     elif level_code == 2:
@@ -296,25 +372,36 @@ def get_level_name(level_code):
     else:
         return "Desconocido"
 
-#Funcion para buscar la posicion de una clase por su codigo, devuelve -1 si no se encuentra
-
 def search_class_position(code):
+    """
+    Objetivo: encontrar la posición de una clase a partir de su código.
+    Parámetros: code, código de la clase buscada.
+    Salida: posición de la clase o -1 si no existe.
+    """
     position = -1
     for i in range(len(classes)):
         if classes[i][CLASS_CODE] == code:
             position = i
     return position
 
-#Funcion de busqueda de usuario para login
 def search_user_position(username):
+    """
+    Objetivo: encontrar la posición de un usuario sin distinguir mayúsculas de minúsculas.
+    Parámetros: username, nombre de usuario buscado.
+    Salida: posición del usuario o -1 si no existe.
+    """
     position = -1
     for i in range(len(login_users)):
-        if login_users[i][LOGIN_USERNAME] == username:
+        if re.fullmatch(login_users[i][LOGIN_USERNAME], username, re.IGNORECASE):
             position = i
     return position
 
-#Funcion de login De 3 intentos
 def login():
+    """
+    Objetivo: autenticar a un usuario con un máximo de tres intentos.
+    Parámetros: ninguno; solicita el usuario y la contraseña por teclado.
+    Salida: True si las credenciales son correctas; False si se agotan los intentos.
+    """
     attempts = 1
     max_attempts = 3
 
@@ -336,8 +423,13 @@ def login():
         print("¡Bienvenido al sistema de gestión del gimnasio!")
         return True
 
-#Funcion para mostrar el menu de opciones y validar la opcion ingresada
+# Gestión de socios ==> Este codigo habria que eliminarlo ya que no lo llaman en ninguna parte LC 2/9
 def input_option():
+    """
+    Objetivo: solicitar y validar una opción del menú de gestión de socios.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 4.
+    """
     print("Opcion 1: sumar afiliado")
     print("Opcion 2: eliminar afiliado")
     print("Opcion 3: modificar afiliado")
@@ -361,6 +453,11 @@ def input_option():
 
 #Funcion para sumar afiliados, validando edad, tipo y teléfono
 def sumar_afiliados():
+    """
+    Objetivo: registrar un nuevo socio con código generado automáticamente.
+    Parámetros: ninguno; solicita los datos del socio por teclado.
+    Salida: no devuelve valores; agrega el socio a la matriz de afiliados.
+    """
     print("SUMAR AFILIADO")
     nombre = input("Nombre completo: ")
 
@@ -387,8 +484,12 @@ def sumar_afiliados():
 
     print(f"Socio '{nombre}' agregado con código {codigo}.")
 
-#Funcion para eliminar afiliados, validando que el codigo exista y confirmando la eliminacion
 def eliminar_afiliados():
+    """
+    Objetivo: eliminar un socio y sus inscripciones asociadas luego de solicitar confirmación.
+    Parámetros: ninguno; solicita el código del socio por teclado.
+    Salida: no devuelve valores; actualiza las matrices de afiliados e inscripciones.
+    """
     print("BAJAR AFILIADO")
     codigo = pedir_entero("Ingrese el código del socio a eliminar: ", "Código inválido, ingrese un número.")
     pos = search_affiliate_position(codigo)
@@ -406,8 +507,12 @@ def eliminar_afiliados():
         else:
             print("Operación cancelada.")
 
-#Funcion para obtener el nombre del tipo de afiliado a partir del codigo
 def get_type_name(type_code):
+    """
+    Objetivo: obtener el nombre correspondiente a un código de tipo de socio.
+    Parámetros: type_code, código numérico del tipo de socio.
+    Salida: nombre del tipo o "Desconocido" si el código no es válido.
+    """
     if type_code == 1:
         return "Mensual"
     elif type_code == 2:
@@ -417,8 +522,12 @@ def get_type_name(type_code):
     else:
         return "Desconocido"
 
-#Funcion para buscar la posicion de un afiliado por su codigo, devuelve -1 si no se encuentra
 def search_affiliate_position(code):
+    """
+    Objetivo: encontrar la posición de un socio a partir de su código.
+    Parámetros: code, código del socio buscado.
+    Salida: posición del socio o -1 si no existe.
+    """
     position = -1
     for i in range(len(affiliates)):
         if affiliates[i][AFF_CODE] == code:
@@ -427,10 +536,20 @@ def search_affiliate_position(code):
 
 
 def remove_enrollment_at(position):
+    """
+    Objetivo: eliminar una inscripción ubicada en una posición determinada.
+    Parámetros: position, posición de la inscripción que se desea eliminar.
+    Salida: no devuelve valores; elimina una fila de la matriz de inscripciones.
+    """
     enrollments.pop(position)
 
 
 def remove_enrollments_by_affiliate(affiliate_code):
+    """
+    Objetivo: eliminar todas las inscripciones pertenecientes a un socio.
+    Parámetros: affiliate_code, código del socio.
+    Salida: cantidad de inscripciones eliminadas.
+    """
     deleted_count = 0
     for i in range(len(enrollments) - 1, -1, -1):
         if enrollments[i][ENR_AFFILIATE_CODE] == affiliate_code:
@@ -440,6 +559,11 @@ def remove_enrollments_by_affiliate(affiliate_code):
 
 
 def remove_enrollments_by_class(class_code):
+    """
+    Objetivo: eliminar todas las inscripciones pertenecientes a una clase.
+    Parámetros: class_code, código de la clase.
+    Salida: cantidad de inscripciones eliminadas.
+    """
     deleted_count = 0
     for i in range(len(enrollments) - 1, -1, -1):
         if enrollments[i][ENR_CLASS_CODE] == class_code:
@@ -449,6 +573,11 @@ def remove_enrollments_by_class(class_code):
 
 #Funcion para modificar afiliados, validando que el codigo exista y permitiendo modificar nombre, edad, tipo y teléfono
 def modify_affiliate():
+    """
+    Objetivo: modificar el nombre, la edad o el tipo de un socio existente.
+    Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
+    Salida: no devuelve valores; actualiza la fila correspondiente de afiliados.
+    """
     print("MODIFICAR AFILIADO")
     codigo = pedir_entero("Ingrese el código del socio a modificar: ", "Código inválido, ingrese un número.")
     pos = search_affiliate_position(codigo)
@@ -482,14 +611,27 @@ def modify_affiliate():
 
 #Funcion para listar afiliados, mostrando codigo, nombre, edad, tipo y teléfono
 def list_affiliates():
+    """
+    Objetivo: mostrar los datos de todos los socios registrados.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra la lista de socios por pantalla.
+    """
     print("LISTA DE AFILIADOS")
     for i in range(len(affiliates)):
         print(f"Código: {affiliates[i][AFF_CODE]}, Nombre: {affiliates[i][AFF_NAME]}, Edad: {affiliates[i][AFF_AGE]}, Tipo: {get_type_name(affiliates[i][AFF_TYPE])}, Teléfono: {affiliates[i][AFF_PHONE]}")
 
-#Funcion para sumar clases, validando nivel y capacidad, y asignando un codigo automaticamente
+# Gestión de clases
 def sumar_clase():
+    """
+    Objetivo: registrar una nueva clase con código generado automáticamente.
+    Parámetros: ninguno; solicita el nombre, el nivel y la capacidad por teclado.
+    Salida: no devuelve valores; agrega la clase a la matriz de clases.
+    """
     print("\nSUMAR CLASE")
-    nombre = input("Nombre de la clase: ")
+    nombre = input("Nombre de la clase: ").strip()
+    while not es_nombre_clase_valido(nombre):
+        print("ERROR, ingrese una o más palabras formadas solamente por letras")
+        nombre = input("Nombre de la clase: ").strip()
 
     nivel = input("Nivel (1-Principiante, 2-Intermedio, 3-Avanzado): ")
     while not es_entero(nivel) or int(nivel) < 1 or int(nivel) > 3:
@@ -508,8 +650,12 @@ def sumar_clase():
 
     print(f"Clase '{nombre}' agregada con código {codigo}.")
 
-#Funcion para eliminar clases, validando que el codigo exista y confirmando la eliminacion
 def eliminar_clase():
+    """
+    Objetivo: eliminar una clase y sus inscripciones asociadas luego de solicitar confirmación.
+    Parámetros: ninguno; solicita el código de la clase por teclado.
+    Salida: no devuelve valores; actualiza las matrices de clases e inscripciones.
+    """
     print("\nELIMINAR CLASE")
     codigo = input("Ingrese el código de la clase a eliminar: ")
     if not es_entero(codigo):
@@ -530,8 +676,12 @@ def eliminar_clase():
         else:
             print("Operación cancelada.")
 
-#Funcion para modificar clases
 def modify_clase():
+    """
+    Objetivo: modificar el nombre, el nivel o la capacidad de una clase existente.
+    Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
+    Salida: no devuelve valores; actualiza la fila correspondiente de clases.
+    """
     print("MODIFICAR CLASE")
     codigo = input("Ingrese el código de la clase a modificar: ")
     if not es_entero(codigo):
@@ -542,8 +692,11 @@ def modify_clase():
         print("Clase no encontrada.")
     else:
         print(f"Clase actual: {classes[pos][CLASS_NAME]}, Nivel: {get_level_name(classes[pos][CLASS_LEVEL])}, Cupos disponibles: {classes[pos][CLASS_CAPACITY]}")
-        nombre = input(f"Nuevo nombre (si para mantener '{classes[pos][CLASS_NAME]}'): ")
+        nombre = input(f"Nuevo nombre (si para mantener '{classes[pos][CLASS_NAME]}'): ").strip()
         if nombre != "si":
+            while not es_nombre_clase_valido(nombre):
+                print("ERROR, ingrese una o más palabras formadas solamente por letras")
+                nombre = input("Nuevo nombre: ").strip()
             classes[pos][CLASS_NAME] = nombre
         nivel = input(f"Nuevo nivel -1-Principiante 2-Intermedio 3-Avanzado- (si para mantener {get_level_name(classes[pos][CLASS_LEVEL])}): ")
         if nivel != "si":
@@ -559,8 +712,12 @@ def modify_clase():
             classes[pos][CLASS_CAPACITY] = int(capacidad)
         print(f"Clase modificada: {classes[pos][CLASS_NAME]}, Nivel: {get_level_name(classes[pos][CLASS_LEVEL])}, Cupos disponibles: {classes[pos][CLASS_CAPACITY]}")
 
-#Funcion listar clases, mostrando codigo, nombre, nivel y capacidad
 def list_clases():
+    """
+    Objetivo: mostrar los datos de todas las clases registradas.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra la lista de clases por pantalla.
+    """
     print("LISTA DE CLASES")
     print(f"{'Código':<10} {'Nombre':<20} {'Nivel':<18} {'Cupos disponibles'}")
     print("-" * 58)
@@ -568,19 +725,47 @@ def list_clases():
         print(f"{classes[i][CLASS_CODE]:<10} {classes[i][CLASS_NAME]:<20} {get_level_name(classes[i][CLASS_LEVEL]):<18} {classes[i][CLASS_CAPACITY]}")
 
 def does_class_code_exist(code):
+    """
+    Objetivo: determinar si existe una clase con un código específico.
+    Parámetros: code, código de la clase buscada.
+    Salida: True si la clase existe; False en caso contrario.
+    """
     for row in classes:
         if row[CLASS_CODE] == code:
             return True
     return False
 
 def does_affiliate_code_exist(code):
+    """
+    Objetivo: determinar si existe un socio con un código específico.
+    Parámetros: code, código del socio buscado.
+    Salida: True si el socio existe; False en caso contrario.
+    """
     for row in affiliates:
         if row[AFF_CODE] == code:
             return True
     return False
 
-#Funcion para dar de alta una inscripcion
+## Agrego esta funcion para validar si un afiliado ya está dado de alta en una clase LC 2/9
+def is_affiliate_enrolled_in_class(affiliate_code, class_code):
+    """
+    Objetivo: determinar si un socio ya posee una inscripción activa en una clase utilizando lambda y filter.
+    Parámetros: affiliate_code (int), class_code (int).
+    Salida: True si el afiliado ya está inscripto activamente; False en caso contrario.
+    """
+    inscripciones_previas = list(filter(
+        lambda enr: enr[ENR_AFFILIATE_CODE] == affiliate_code and enr[ENR_CLASS_CODE] == class_code and enr[ENR_STATUS] == 1,
+        enrollments
+    ))
+    return len(inscripciones_previas) > 0
+
+# Gestión de inscripciones
 def alta_inscripcion():
+    """
+    Objetivo: registrar una inscripción activa para un socio en una clase con cupo disponible.
+    Parámetros: ninguno; solicita los códigos de la clase y del socio por teclado.
+    Salida: no devuelve valores; agrega la inscripción y descuenta un cupo de la clase.
+    """
     list_clases()
     class_code = pedir_entero("Ingrese el código de la clase a la que desea inscribirse: ", "por favor ingrese un código válido.")
     while not does_class_code_exist(class_code):
@@ -595,13 +780,21 @@ def alta_inscripcion():
     while not does_affiliate_code_exist(affiliate_code):
         print("por favor ingrese un código de afiliado válido.")
         affiliate_code = pedir_entero("Ingrese su código de afiliado: ", "por favor ingrese un código de afiliado válido.")
-
+    if is_affiliate_enrolled_in_class(affiliate_code, class_code):
+        print("ERROR: El afiliado ya se encuentra inscripto en esta clase.")
+        return
+    
     codigo = 301 if len(enrollments) == 0 else enrollments[-1][ENR_CODE] + 1
     enrollments.append([codigo, int(affiliate_code), int(class_code), 0, 1])
     classes[class_pos][CLASS_CAPACITY] -= 1
+    print("Inscripción realizada con éxito.")
 
-#Funcion para listar inscripciones
 def list_inscripciones():
+    """
+    Objetivo: mostrar los datos de todas las inscripciones registradas.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra la lista de inscripciones por pantalla.
+    """
     print("LISTA DE INSCRIPCIONES")
     print(f"{'Código':<10} {'Socio':<20} {'Clase':<20} {'Asistencias':<12} {'Estado'}")
     print("-" * 80)
@@ -612,14 +805,11 @@ def list_inscripciones():
         class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
         print(f"{enrollments[i][ENR_CODE]:<10} {affiliate_name:<20} {class_name:<20} {enrollments[i][ENR_ATTENDANCE]:<12} {'Activa' if enrollments[i][ENR_STATUS] == 1 else 'Inactiva'}")
 
-##Funcionm para listar clases de un socio
 def clases_de_socio(affiliate_code): 
     """
-    Obtiene la lista de las clases activas en las que se encuentra inscripto un socio.
-    Parámetros:
-        affiliate_code (int): Código de identificación del socio.
-    Retorna:
-        list[str]: Lista con los nombres de las clases activas a las que asiste el socio.
+    Objetivo: obtener los nombres de las clases activas de un socio.
+    Parámetros: affiliate_code, código del socio.
+    Salida: lista con los nombres de las clases activas del socio.
     """
 
     posiciones = list(filter(
@@ -634,11 +824,9 @@ def clases_de_socio(affiliate_code):
 
 def listar_clases_socio():
     """
-    Muestra las clases activas de un socio específico.
-    Solicita por consola el código del socio, verifica su existencia en la lista
-    de afiliados e imprime la lista de sus clases activas o un mensaje si no posee ninguna.
-    Parámetros:
-        No recibe parámetros (interactúa con el usuario para obtener el código del socio).
+    Objetivo: mostrar las clases activas de un socio específico.
+    Parámetros: ninguno; solicita el código del socio por teclado.
+    Salida: no devuelve valores; muestra las clases o un mensaje informativo.
     """
     print("Clases de un socio")
     codigo = pedir_entero("Ingrese el codigo del socio: ","Codigo invalido, ingresar un numero")
@@ -652,8 +840,13 @@ def listar_clases_socio():
     else:
         print(f"El socio {affiliates[pos][AFF_NAME]} tiene las clases: {', '.join(clases)}")
 
-#Funcion opciones de clases, mostrando el menu y validando la opcion ingresada
+# Menús de gestión
 def input_clases_option():
+    """
+    Objetivo: solicitar y validar una opción del menú de gestión de clases.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 4.
+    """
     print("--- GESTIÓN DE CLASES ---")
     print("Opcion 1: Sumar clase")
     print("Opcion 2: Eliminar clase")
@@ -672,8 +865,12 @@ def input_clases_option():
     option = int(raw_option)
     return option
 
-#Funcion menu de clases, mostrando el menu de opciones y ejecutando la opcion seleccionada hasta que se elija volver al menu principal
 def clases_menu():
+    """
+    Objetivo: ejecutar las opciones del menú de clases hasta que el usuario decida volver.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo del menú de clases.
+    """
     option = input_clases_option()
     while option != 0:
         if option == 1:
@@ -686,8 +883,12 @@ def clases_menu():
             list_clases()
         option = input_clases_option()
 
-#Funcion opciones de afiliados, mostrando el menu y validando la opcion ingresada
 def input_affiliate_option():
+    """
+    Objetivo: solicitar y validar una opción del menú de gestión de socios.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 4.
+    """
     print("--- GESTIÓN DE AFILIADOS ---")
     print("Opcion 1: sumar afiliado")
     print("Opcion 2: eliminar afiliado")
@@ -710,8 +911,12 @@ def input_affiliate_option():
     option = int(raw_option)
     return option
 
-#Funcion menu de afiliados, mostrando el menu de opciones y ejecutando la opcion seleccionada hasta que se elija volver al menu principal
 def affiliate_menu():
+    """
+    Objetivo: ejecutar las opciones del menú de socios hasta que el usuario decida volver.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo del menú de socios.
+    """
     option = input_affiliate_option()
     while option != 0:
         if option == 1:
@@ -724,14 +929,18 @@ def affiliate_menu():
             list_affiliates()
         option = input_affiliate_option()
 
-#Funcion opciones de inscripciones, mostrando el menu y validando la opcion ingresada
 def input_inscription_option():
+    """
+    Objetivo: solicitar y validar una opción del menú de gestión de inscripciones.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 5.
+    """
     print("--- GESTIÓN DE INSCRIPCIONES ---")
     print("Opcion 1: Alta inscripción")
     print("Opcion 2: Baja inscripción")
     print("Opcion 3: Modificar inscripción")
     print("Opcion 4: Listar inscripciones")
-    print("Opcion 5: Listar clases de un socio") ## Agrego nueva funcion que llama a la funcion clases_de_socio para listar clases por socio
+    print("Opcion 5: Listar clases de un socio")
     print("Opcion 0: Volver al menu principal")
     raw_option = input("Ingrese una opción: ")
     while not es_entero(raw_option) or int(raw_option) < 0 or int(raw_option) > 5:
@@ -746,8 +955,12 @@ def input_inscription_option():
     option = int(raw_option)
     return option
 
-#Funcion para dar de baja una inscripcion, validando que el codigo de inscripcion exista y confirmando la baja
 def baja_inscripcion():
+    """
+    Objetivo: finalizar una inscripción activa luego de solicitar confirmación.
+    Parámetros: ninguno; solicita el código de la inscripción por teclado.
+    Salida: no devuelve valores; actualiza el estado y libera un cupo de la clase.
+    """
     print("BAJA DE INSCRIPCIÓN")
     codigo = pedir_entero("Ingrese el código de la inscripción a dar de baja: ", "Código inválido, ingrese un número.")
     pos = search_inscription_position(codigo)
@@ -769,15 +982,23 @@ def baja_inscripcion():
         else:
             print("Operación cancelada.")
 
-#Funcion para buscar la posicion de una inscripcion por su codigo, devuelve -1 si no se encuentra
 def search_inscription_position(code):
+    """
+    Objetivo: encontrar la posición de una inscripción a partir de su código.
+    Parámetros: code, código de la inscripción buscada.
+    Salida: posición de la inscripción o -1 si no existe.
+    """
     position = -1
     for i in range(len(enrollments)):
         if enrollments[i][ENR_CODE] == code:
             position = i
     return position
-#Funcion para modificar una inscripcion
 def modify_inscripcion():
+    """
+    Objetivo: modificar las asistencias o el estado de una inscripción existente.
+    Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
+    Salida: no devuelve valores; actualiza la inscripción y los cupos de la clase.
+    """
     print("MODIFICAR INSCRIPCIÓN")
     codigo = pedir_entero("Ingrese el código de la inscripción a modificar: ", "Código inválido, ingrese un número.")
     pos = search_inscription_position(codigo)
@@ -821,8 +1042,12 @@ def modify_inscripcion():
         affiliate_name = affiliates[affiliate_pos][AFF_NAME] if affiliate_pos != -1 else "Socio inexistente"
         class_name = classes[class_pos][CLASS_NAME] if class_pos != -1 else "Clase inexistente"
         print(f"Inscripción modificada: Socio '{affiliate_name}', Clase '{class_name}', Asistencias: {enrollments[pos][ENR_ATTENDANCE]}, Estado: {'Activa' if enrollments[pos][ENR_STATUS] == 1 else 'Inactiva'}")
-#Funcion de menu de inscripciones
 def inscription_menu():
+    """
+    Objetivo: ejecutar las opciones del menú de inscripciones hasta que el usuario decida volver.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo del menú de inscripciones.
+    """
     option = input_inscription_option()
     while option != 0:
         if option == 1:
@@ -837,10 +1062,14 @@ def inscription_menu():
             listar_clases_socio()
         option = input_inscription_option()
 
-# Implementacion de Busquedas
-# En la consigna pone aplicarse sobre datos numericos, por lo que la busqueda se aplicara en los codigos de clase
-# Funcion de menu de busqueda
+# Menús de búsquedas, ordenamientos y estadísticas
+# Las búsquedas requeridas por la consigna se aplican sobre códigos numéricos.
 def menu_busqueda():
+    """
+    Objetivo: solicitar y validar una opción del menú de búsquedas.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 2.
+    """
     print("--- MENÚ DE BÚSQUEDA ---")
     print("Opción 1: Buscar clase por código (Binaria)")
     print("Opción 2: Buscar socio por código (Secuencial)")
@@ -855,8 +1084,12 @@ def menu_busqueda():
         raw_option = input("Ingrese una opción: ")
     return int(raw_option)
 
-# Funcion de opción de busqueda, mostrando el menu de opciones de busqueda anterior
 def opcion_menu_busqueda():
+    """
+    Objetivo: ejecutar búsquedas hasta que el usuario decida volver al menú principal.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo del menú de búsquedas.
+    """
     option = menu_busqueda()
     while option != 0:
         if option == 1:
@@ -865,8 +1098,12 @@ def opcion_menu_busqueda():
             buscar_socio_secuencial()
         option = menu_busqueda()
 
-#Funcion de menu de ordenamiento
 def menu_ordenamiento():
+    """
+    Objetivo: solicitar y validar una opción del menú de ordenamientos.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 3.
+    """
     print("--- MENÚ DE ORDENAMIENTO ---")
     print("Opción 1: Ordenar socios por edad (Selección)")
     print("Opción 2: Ordenar clases por nivel (Inserción)")
@@ -883,8 +1120,12 @@ def menu_ordenamiento():
         raw_option = input("Ingrese una opción: ")
     return int(raw_option)
 
-#Funcion de opción de ordenamiento, mostrando el menu de opciones y ejecutando la opcion seleccionada hasta que se elija volver al menu principal
 def opcion_menu_ordenamiento():
+    """
+    Objetivo: ejecutar el ordenamiento elegido por el usuario.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; muestra los datos ordenados según la opción elegida.
+    """
     option = menu_ordenamiento()
     if option == 1:
         ordenar_socios_por_edad()
@@ -894,6 +1135,11 @@ def opcion_menu_ordenamiento():
         ordenar_inscripciones_por_asistencias()
 
 def input_matrix_option():
+    """
+    Objetivo: solicitar y validar una opción del menú de cálculos estadísticos.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 4.
+    """
     print("--- MENÚ DE CÁLCULOS ESTADÍSTICOS MATRICIALES ---")
     print("Opción 1: Matriz de cantidad de afiliados por clase")
     print("Opción 2: Matriz de cantidad de inscripciones por nivel de clase")
@@ -913,6 +1159,11 @@ def input_matrix_option():
     return int(rawOption)
 
 def matrix_menu():
+    """
+    Objetivo: ejecutar cálculos estadísticos hasta que el usuario decida volver.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo del menú estadístico.
+    """
     option = input_matrix_option()
     while option != 0:
         if option == 1:
@@ -925,8 +1176,12 @@ def matrix_menu():
             affiliates_by_type_and_class_matrix()
         option = input_matrix_option()
 
-#Funcion para mostrar el menu de opciones principal y validar la opcion ingresada
 def input_main_option():
+    """
+    Objetivo: solicitar y validar una opción del menú principal.
+    Parámetros: ninguno.
+    Salida: opción elegida como número entero entre 0 y 6.
+    """
     print("--- MENU PRINCIPAL ---")
     print("Opción 1: Gestión de afiliados")
     print("Opción 2: Gestión de clases")
@@ -950,8 +1205,12 @@ def input_main_option():
     option = int(raw_option)
     return option
 
-#Funcion menu principal, mostrando el menu de opciones y ejecutando la opcion seleccionada hasta que se elija salir
 def main_menu():
+    """
+    Objetivo: ejecutar las opciones principales del sistema hasta que el usuario decida salir.
+    Parámetros: ninguno.
+    Salida: no devuelve valores; administra el flujo general del programa.
+    """
     option = input_main_option()
     while option != 0:
         if option == 1:
