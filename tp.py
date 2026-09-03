@@ -451,7 +451,6 @@ def input_option():
 
     return option
 
-#Funcion para sumar afiliados, validando edad, tipo y teléfono
 def sumar_afiliados():
     """
     Objetivo: registrar un nuevo socio con código generado automáticamente.
