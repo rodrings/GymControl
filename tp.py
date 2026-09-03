@@ -357,7 +357,6 @@ def es_telefono_valido(telefono):
     Parámetros: teléfono a validar.
     Salida: flag booleana indicando si el teléfono es válido.
     """
-    """
     return re.fullmatch(r"\d{2}-\d{4}-\d{4}", telefono) is not None
 
 #Funcion para obtener el nombre del nivel de clase a partir del codigo
@@ -576,8 +575,9 @@ def remove_enrollments_by_class(class_code):
     return deleted_count
 
 def modify_affiliate():
-"""
-   Objetivo: modificar afiliados, validando que el codigo exista y permitiendo modificar nombre, edad, tipo y teléfono
+    """
+    Objetivo: modificar afiliados, validando que el código exista y permitiendo
+    modificar nombre, edad, tipo y teléfono.
     Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
     Salida: no devuelve valores; actualiza la fila correspondiente de afiliados.
     """
