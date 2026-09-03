@@ -352,7 +352,12 @@ def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.",
 
 
 def es_telefono_valido(telefono):
-    """Valida teléfonos en formato XX-XXXX-XXXX, por ejemplo 11-2587-8779."""
+    """
+    Objetivo: Valida teléfonos en formato XX-XXXX-XXXX, por ejemplo 11-2587-8779.
+    Parámetros: teléfono a validar.
+    Salida: flag booleana indicando si el teléfono es válido.
+    """
+    """
     return re.fullmatch(r"\d{2}-\d{4}-\d{4}", telefono) is not None
 
 #Funcion para obtener el nombre del nivel de clase a partir del codigo
