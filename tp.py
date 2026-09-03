@@ -293,11 +293,17 @@ def get_level_name(level_code):
 #Funcion para buscar la posicion de una clase por su codigo, devuelve -1 si no se encuentra
 
 def search_class_position(code):
-    position = -1
-    for i in range(len(classes)):
-        if classes[i][CLASS_CODE] == code:
-            position = i
-    return position
+    """
+    Objetivo: encontrar la posición de una clase a partir de su código.
+    Parámetros: code, código de la clase buscada.
+    Salida: posición de la clase o -1 si no existe.
+    """
+    posiciones = list(filter(lambda i: affiliates[i][CLASS_CODE] == code, range(len(affiliates))))
+    
+    if len(posiciones) > 0:
+        return posiciones[0]
+    else:
+     return -1
 
 #Funcion de busqueda de usuario para login
 def search_user_position(username):
@@ -306,6 +312,18 @@ def search_user_position(username):
         if login_users[i][LOGIN_USERNAME] == username:
             position = i
     return position
+
+def search_affiliate_position(code):
+    """
+    Objetivo: encontrar la posición de un socio a partir de su código.
+    Parámetros: code, código del socio buscado.
+    Salida: posición del socio o -1 si no existe.
+    """
+    posiciones = list(filter(lambda i: affiliates[i][AFF_CODE] == code, range(len(affiliates))))
+    if len(posiciones) > 0:
+        return posiciones[0]
+    else: 
+        return -1
 
 #Funcion de login De 3 intentos
 def login():
