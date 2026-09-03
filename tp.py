@@ -570,10 +570,9 @@ def remove_enrollments_by_class(class_code):
             deleted_count += 1
     return deleted_count
 
-#Funcion para modificar afiliados, validando que el codigo exista y permitiendo modificar nombre, edad, tipo y teléfono
 def modify_affiliate():
-    """
-    Objetivo: modificar el nombre, la edad o el tipo de un socio existente.
+"""
+   Objetivo: modificar afiliados, validando que el codigo exista y permitiendo modificar nombre, edad, tipo y teléfono
     Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
     Salida: no devuelve valores; actualiza la fila correspondiente de afiliados.
     """
