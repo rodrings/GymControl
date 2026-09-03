@@ -376,17 +376,24 @@ def get_level_name(level_code):
     else:
         return "Desconocido"
 
+def search_position(rows, condition):
+    """
+    Objetivo: encontrar la posición de la primera fila que cumpla una condición.
+    Parámetros: rows, matriz donde buscar; condition, función que evalúa cada fila.
+    Salida: posición de la fila o -1 si ninguna cumple la condición.
+    """
+    positions = list(filter(lambda i: condition(rows[i]), range(len(rows))))
+    if len(positions) > 0:
+        return positions[0]
+    return -1
+
 def search_class_position(code):
     """
     Objetivo: encontrar la posición de una clase a partir de su código.
     Parámetros: code, código de la clase buscada.
     Salida: posición de la clase o -1 si no existe.
     """
-    position = -1
-    for i in range(len(classes)):
-        if classes[i][CLASS_CODE] == code:
-            position = i
-    return position
+    return search_position(classes, lambda row: row[CLASS_CODE] == code)
 
 def search_user_position(username):
     """
@@ -531,11 +538,7 @@ def search_affiliate_position(code):
     Parámetros: code, código del socio buscado.
     Salida: posición del socio o -1 si no existe.
     """
-    position = -1
-    for i in range(len(affiliates)):
-        if affiliates[i][AFF_CODE] == code:
-            position = i
-    return position
+    return search_position(affiliates, lambda row: row[AFF_CODE] == code)
 
 
 def remove_enrollment_at(position):
