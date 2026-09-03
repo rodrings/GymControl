@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+import re
 
 # Índices fijos para cada fila de la matriz
 LOGIN_USERNAME, LOGIN_PASSWORD = 0, 1
@@ -349,6 +350,16 @@ def pedir_entero(mensaje, mensaje_error="El dato ingresado debe ser numérico.",
         valor = input(mensaje)
     return int(valor)
 
+
+def es_telefono_valido(telefono):
+    """
+    Objetivo: Valida teléfonos en formato XX-XXXX-XXXX, por ejemplo 11-2587-8779.
+    Parámetros: teléfono a validar.
+    Salida: flag booleana indicando si el teléfono es válido.
+    """
+    return re.fullmatch(r"\d{2}-\d{4}-\d{4}", telefono) is not None
+
+#Funcion para obtener el nombre del nivel de clase a partir del codigo
 # Funciones auxiliares de búsqueda y conversión
 def get_level_name(level_code):
     """
@@ -463,11 +474,16 @@ def sumar_afiliados():
         print("ERROR, se debe ingresar un codigo entre 1 y 3")
         affiliate_type = input("Vuelva a ingresar su tipo (1-Mensual, 2-Libre, 3-Premium): ")
 
+    telefono = input("Ingrese el teléfono (formato XX-XXXX-XXXX): ")
+    while not es_telefono_valido(telefono):
+        print("ERROR, el teléfono debe tener el formato XX-XXXX-XXXX")
+        telefono = input("Vuelva a ingresar el teléfono: ")
+
     codigo = 101
     if len(affiliates) > 0:
         codigo = affiliates[-1][AFF_CODE] + 1
 
-    affiliates.append([nombre, codigo, int(edad), int(affiliate_type)]) ## Agregar campo telefono
+    affiliates.append([nombre, codigo, int(edad), int(affiliate_type), telefono])
 
     print(f"Socio '{nombre}' agregado con código {codigo}.")
 
@@ -483,7 +499,7 @@ def eliminar_afiliados():
     if pos == -1:
         print("Socio no encontrado.")
     else:
-        print(f"¿Seguro que desea eliminar a '{affiliates[pos][AFF_NAME]}'? (s/n)")
+        print(f"¿Seguro que desea eliminar a '{affiliates[pos][AFF_NAME]}' (teléfono: {affiliates[pos][AFF_PHONE]})? (s/n)")
         confirm = input()
         if confirm.lower() == "s":
             inscripciones_eliminadas = remove_enrollments_by_affiliate(codigo)
@@ -560,7 +576,8 @@ def remove_enrollments_by_class(class_code):
 
 def modify_affiliate():
     """
-    Objetivo: modificar el nombre, la edad o el tipo de un socio existente.
+    Objetivo: modificar afiliados, validando que el código exista y permitiendo
+    modificar nombre, edad, tipo y teléfono.
     Parámetros: ninguno; solicita el código y los nuevos datos por teclado.
     Salida: no devuelve valores; actualiza la fila correspondiente de afiliados.
     """
@@ -570,7 +587,7 @@ def modify_affiliate():
     if pos == -1:
         print("Socio no encontrado.")
     else:
-        print(f"Socio actual: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}")
+        print(f"Socio actual: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}, teléfono: {affiliates[pos][AFF_PHONE]}")
         nombre = input(f"Nuevo nombre (si para mantener '{affiliates[pos][AFF_NAME]}'): ")
         if nombre != "si":
             affiliates[pos][AFF_NAME] = nombre
@@ -587,8 +604,15 @@ def modify_affiliate():
                 print("ERROR, se debe ingresar un codigo entre 1 y 3")
                 type_code = input("Nuevo tipo: ")
             affiliates[pos][AFF_TYPE] = int(type_code)
-        print(f"Socio modificado: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}")
+        telefono = input(f"Nuevo teléfono (si para mantener '{affiliates[pos][AFF_PHONE]}', formato XX-XXXX-XXXX): ")
+        if telefono != "si":
+            while not es_telefono_valido(telefono):
+                print("ERROR, el teléfono debe tener el formato XX-XXXX-XXXX")
+                telefono = input("Nuevo teléfono: ")
+            affiliates[pos][AFF_PHONE] = telefono
+        print(f"Socio modificado: {affiliates[pos][AFF_NAME]}, {affiliates[pos][AFF_AGE]} años, {get_type_name(affiliates[pos][AFF_TYPE])}, teléfono: {affiliates[pos][AFF_PHONE]}")
 
+#Funcion para listar afiliados, mostrando codigo, nombre, edad, tipo y teléfono
 def list_affiliates():
     """
     Objetivo: mostrar los datos de todos los socios registrados.
@@ -597,7 +621,7 @@ def list_affiliates():
     """
     print("LISTA DE AFILIADOS")
     for i in range(len(affiliates)):
-        print(f"Código: {affiliates[i][AFF_CODE]}, Nombre: {affiliates[i][AFF_NAME]}, Edad: {affiliates[i][AFF_AGE]}, Tipo: {get_type_name(affiliates[i][AFF_TYPE])}")
+        print(f"Código: {affiliates[i][AFF_CODE]}, Nombre: {affiliates[i][AFF_NAME]}, Edad: {affiliates[i][AFF_AGE]}, Tipo: {get_type_name(affiliates[i][AFF_TYPE])}, Teléfono: {affiliates[i][AFF_PHONE]}")
 
 # Gestión de clases
 def sumar_clase():
